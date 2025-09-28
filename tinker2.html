@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Pembelajaran Tinkercad Arduino</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        .title h2 {
+            font-size: 1.8rem;
+            color: #34495e;
+            margin-bottom: 20px;
+        }
+
+        .intro-info {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .intro-info p {
+            margin: 5px 0;
+            font-size: 1.1rem;
+        }
+
+        .animated-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .navigation {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .objectives-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .objectives-list h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .objectives-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .objectives-list li {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .guide-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .guide-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .guide-card:hover {
+            transform: scale(1.05);
+        }
+
+        .concept-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .concept-item {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .concept-item:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        .concept-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .concept-item:hover::before {
+            animation: shine 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .material-content {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .material-content h3 {
+            color: #2c3e50;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .interactive-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .drag-drop-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .drag-items, .drop-zone {
+            background: white;
+            color: #2c3e50;
+            padding: 20px;
+            border-radius: 15px;
+            min-height: 200px;
+        }
+
+        .drag-item {
+            background: #667eea;
+            color: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: move;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .drag-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .drop-zone {
+            border: 2px dashed #667eea;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .drop-zone.drag-over {
+            background: #e8f4fd;
+            border-color: #2980b9;
+        }
+
+        .quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #ecf0f1;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        .option.incorrect {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .feedback.correct {
+            background: #d5f4e6;
+            color: #27ae60;
+            border: 2px solid #27ae60;
+        }
+
+        .feedback.incorrect {
+            background: #fdf2f2;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .summary-card h4 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .task-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .task-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #f093fb;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .references {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .references h3 {
+            color: #ecf0f1;
+            margin-bottom: 20px;
+        }
+
+        .references ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references li {
+            background: rgba(255,255,255,0.1);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .page-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .page {
+                padding: 20px;
+            }
+            
+            .title h1 {
+                font-size: 2rem;
+            }
+            
+            .title h2 {
+                font-size: 1.4rem;
+            }
+            
+            .drag-drop-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .guide-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .concept-map {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-counter">
+        <span id="currentPage">1</span> / <span id="totalPages">11</span>
+    </div>
+
+    <div class="container">
+        <!-- Halaman 1: Pembuka/Intro -->
+        <div class="page active" id="page1">
+            <div class="title">
+                <div class="animated-icon">🔧⚡</div>
+                <h1>Penggunaan Tinkercad Dalam Membuat Simulasi Project Arduino</h1>
+            </div>
+            
+            <div class="intro-info">
+                <p><strong>Mata Pelajaran:</strong> Informatika</p>
+                <p><strong>Kelas/Tingkatan:</strong> Fase E dan F</p>
+                <p><strong>Pembuat:</strong> ERWAN SETIAWAN</p>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <div style="font-size: 3rem; animation: pulse 2s infinite;">🚀</div>
+                <p style="font-size: 1.2rem; color: #2c3e50; margin-top: 20px;">
+                    Selamat datang di modul pembelajaran interaktif! Mari belajar menggunakan Tinkercad untuk membuat simulasi Arduino yang menarik dan edukatif.
+                </p>
+            </div>
+
+            <div class="navigation">
+                <button class="btn" onclick="nextPage()">Mulai Pembelajaran 🎯</button>
+            </div>
+        </div>
+
+        <!-- Halaman 2: Tujuan Pembelajaran -->
+        <div class="page" id="page2">
+            <div class="title">
+                <h2>🎯 Tujuan Pembelajaran</h2>
+            </div>
+
+            <div class="objectives-list">
+                <h3>🌟 Tujuan Umum</h3>
+                <ul>
+                    <li>Murid mampu memahami dan menggunakan Tinkercad sebagai platform simulasi virtual untuk merancang, menguji, dan menyimulasikan rangkaian elektronik berbasis Arduino secara mandiri dan kreatif.</li>
+                </ul>
+            </div>
+
+            <div class="objectives-list">
+                <h3>🎯 Tujuan Khusus</h3>
+                <p style="margin-bottom: 15px;"><strong>Setelah mengikuti pembelajaran, murid diharapkan mampu:</strong></p>
+                <ul>
+                    <li>✅ Menjelaskan fungsi dan manfaat Tinkercad sebagai alat simulasi elektronik dan pemrograman berbasis Arduino</li>
+                    <li>✅ Mengidentifikasi komponen elektronika dasar (LED, resistor, breadboard, sensor, dll.) dalam Tinkercad</li>
+                    <li>✅ Menggunakan antarmuka Tinkercad untuk membuat proyek Arduino secara virtual</li>
+                    <li>✅ Merancang rangkaian Arduino sederhana (LED blinking, sensor suhu, buzzer, dsb) menggunakan Tinkercad</li>
+                    <li>✅ Menulis dan menguji kode program Arduino dalam Tinkercad menggunakan bahasa C/C++</li>
+                    <li>✅ Melakukan simulasi dan analisis hasil kerja proyek Arduino di lingkungan Tinkercad</li>
+                    <li>✅ Memperbaiki (debugging) kesalahan dalam rangkaian atau program Arduino</li>
+                    <li>✅ Mempresentasikan hasil simulasi proyek Arduino dengan percaya diri</li>
+                </ul>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevPage()">⬅️ Kembali</button>
+                <button class="btn" onclick="nextPage()">Lanjut ➡️</button>
+            </div>
+        </div>
+
+        <!-- Halaman 3: Petunjuk Penggunaan -->
+        <div class="page" id="page3">
+            <div class="title">
+                <h2>📖 Petunjuk Penggunaan Media</h2>
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-card">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">🖱️</div>
+                    <h3>Navigasi</h3>
+                    <p>Gunakan tombol "Lanjut" dan "Kembali" untuk berpindah halaman. Klik tombol interaktif untuk mengakses fitur khusus.</p>
+                </div>
+
+                <div class="guide-card">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">🔍</div>
+                    <h3>Simbol & Ikon</h3>
+                    <p>🎯 = Tujuan | 📖 = Petunjuk | 🗺️ = Peta Konsep | 📚 = Materi | 🎮 = Interaktif | 📝 = Kuis</p>
+                </div>
+
+                <div class="guide-card">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">⏱️</div>
+                    <h3>Estimasi Waktu</h3>
+                    <p>Total pembelajaran: 45-60 menit<br>
+                    Setiap bagian: 5-8 menit<br>
+                    Kuis & latihan: 10-15 menit</p>
+                </div>
+
+                <div class="guide-card">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">💡</div>
+                    <h3>Tips Belajar</h3>
+                    <p>Ikuti urutan materi, coba semua interaksi, dan jangan ragu untuk mengulang bagian yang sulit dipahami.</p>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevPage()">⬅️ Kembali</button>
+                <button class="btn" onclick="nextPage()">Lanjut ➡️</button>
+            </div>
+        </div>
+
+        <!-- Halaman 4: Peta Konsep -->
+        <div class="page" id="page4">
+            <div class="title">
+                <h2>🗺️ Peta Konsep Pembelajaran</h2>
+            </div>
+
+            <div class="concept-map">
+                <div class="concept-item" onclick="showConceptDetail('tinkercad')">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🌐</div>
+                    <h3>Pengenalan Tinkercad</h3>
+                    <p>Platform simulasi online untuk Arduino</p>
+                </div>
+
+                <div class="concept-item" onclick="showConceptDetail('komponen')">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🔧</div>
+                    <h3>Komponen Elektronik</h3>
+                    <p>LED, Resistor, Sensor, Breadboard</p>
+                </div>
+
+                <div class="concept-item" onclick="showConceptDetail('interface')">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🖥️</div>
+                    <h3>Interface Tinkercad</h3>
+                    <p>Menu, toolbar, workspace</p>
+                </div>
+
+                <div class="concept-item" onclick="showConceptDetail('rangkaian')">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">⚡</div>
+                    <h3>Membuat Rangkaian</h3>
+                    <p>Drag & drop, koneksi komponen</p>
+                </div>
+
+                <div class="concept-item" onclick="showConceptDetail('coding')">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">💻</div>
+                    <h3>Pemrograman Arduino</h3>
+                    <p>Bahasa C/C++, struktur program</p>
+                </div>
+
+                <div class="concept-item" onclick="showConceptDetail('simulasi')">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🎮</div>
+                    <h3>Simulasi & Testing</h3>
+                    <p>Menjalankan dan menguji proyek</p>
+                </div>
+            </div>
+
+            <div id="conceptDetail" style="display: none; background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0;">
+                <h3 id="conceptTitle"></h3>
+                <p id="conceptDescription"></p>
+                <button class="btn btn-secondary" onclick="hideConceptDetail()">Tutup</button>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevPage()">⬅️ Kembali</button>
+                <button class="btn" onclick="nextPage()">Lanjut ➡️</button>
+            </div>
+        </div>
+
+        <!-- Halaman 5: Materi Inti -->
+        <div class="page" id="page5">
+            <div class="title">
+                <h2>📚 Materi Pembelajaran</h2>
+            </div>
+
+            <div class="material-content">
+                <h3>🌐 Apa itu Tinkercad?</h3>
+                <p>Tinkercad adalah platform simulasi online gratis yang dikembangkan oleh Autodesk. Platform ini memungkinkan kita untuk:</p>
+                <ul style="margin: 15px 0; padding-left: 20px;">
+                    <li>✅ Merancang rangkaian elektronik secara virtual</li>
+                    <li>✅ Mensimulasikan proyek Arduino tanpa hardware fisik</li>
+                    <li>✅ Belajar pemrograman Arduino dengan aman</li>
+                    <li>✅ Berbagi proyek dengan orang lain</li>
+                </ul>
+
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+                    <h4>💡 Keunggulan Tinkercad</h4>
+                    <p>Gratis • Mudah digunakan • Tidak perlu instalasi • Simulasi real-time • Komunitas besar</p>
+                </div>
+            </div>
+
+            <div class="material-content">
+                <h3>🔧 Komponen Elektronik Dasar</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                    <div style="background: white; border: 2px solid #667eea; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2rem;">💡</div>
+                        <h4>LED</h4>
+                        <p>Light Emitting Diode untuk output cahaya</p>
+                    </div>
+                    <div style="background: white; border: 2px solid #667eea; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2rem;">🔌</div>
+                        <h4>Resistor</h4>
+                        <p>Membatasi arus listrik dalam rangkaian</p>
+                    </div>
+                    <div style="background: white; border: 2px solid #667eea; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2rem;">📟</div>
+                        <h4>Arduino Uno</h4>
+                        <p>Mikrokontroler untuk mengontrol rangkaian</p>
+                    </div>
+                    <div style="background: white; border: 2px solid #667eea; padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2rem;">🔲</div>
+                        <h4>Breadboard</h4>
+                        <p>Papan untuk membuat koneksi sementara</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevPage()">⬅️ Kembali</button>
+                <button class="btn" onclick="nextPage()">Lanjut ➡️</button>
+            </div>
+        </div>
+
+        <!-- Halaman 6: Interaktivitas & Latihan -->
+        <div class="page" id="page6">
+            <div class="title">
+                <h2>🎮 Latihan Interaktif</h2>
+            </div>
+
+            <div class="interactive-section">
+                <h3>🎯 Drag & Drop: Pasangkan Komponen dengan Fungsinya</h3>
+                <p>Seret komponen ke kotak yang sesuai dengan fungsinya!</p>
+            </div>
+
+            <div class="drag-drop-area">
+                <div class="drag-items">
+                    <h4>Komponen:</h4>
+                    <div class="drag-item" draggable="true" data-component="led">💡 LED</div>
+                    <div class="drag-item" draggable="true" data-component="resistor">🔌 Resistor</div>
+                    <div class="drag-item" draggable="true" data-component="arduino">📟 Arduino Uno</div>
+                    <div class="drag-item" draggable="true" data-component="breadboard">🔲 Breadboard</div>
+                </div>
+
+                <div class="drop-zone" data-target="functions">
+                    <h4>Fungsi Komponen:</h4>
+                    <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                        <strong>Menghasilkan cahaya</strong> → <span id="led-drop">Letakkan di sini</span>
+                    </div>
+                    <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                        <strong>Membatasi arus listrik</strong> → <span id="resistor-drop">Letakkan di sini</span>
+                    </div>
+                    <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                        <strong>Mengontrol rangkaian</strong> → <span id="arduino-drop">Letakkan di sini</span>
+                    </div>
+                    <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                        <strong>Tempat koneksi komponen</strong> → <span id="breadboard-drop">Letakkan di sini</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dragDropFeedback" class="feedback" style="display: none;"></div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn" onclick="checkDragDrop()">Periksa Jawaban 🔍</button>
+                <button class="btn btn-secondary" onclick="resetDragDrop()">Reset 🔄</button>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevPage()">⬅️ Kembali</button>
+                <button class="btn" onclick="nextPage()">Lanjut ➡️</button>
+            </div>
+        </div>
+
+        <!-- Halaman 7: Kuis/Evaluasi -->
+        <div class="page" id="page7">
+            <div class="title">
+                <h2>📝 Kuis Evaluasi</h2>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="quizProgress"></div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="question" id="question1">
+                    <h4>Pertanyaan 1 dari 3</h4>
+                    <p><strong>Apa keunggulan utama menggunakan Tinkercad untuk belajar Arduino?</strong></p>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">A. Memerlukan hardware fisik yang mahal</div>
+                        <div class="option" onclick="selectOption(this, true)">B. Simulasi gratis tanpa risiko kerusakan komponen</div>
+                        <div class="option" onclick="selectOption(this, false)">C. Hanya bisa digunakan oleh programmer ahli</div>
+                        <div class="option" onclick="selectOption(this, false)">D. Tidak mendukung pemrograman Arduino</div>
+                    </div>
+                    <div id="feedback1" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question" id="question2" style="display: none;">
+                    <h4>Pertanyaan 2 dari 3</h4>
+                    <p><strong>Komponen apa yang berfungsi untuk membatasi arus listrik dalam rangkaian?</strong></p>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">A. LED</div>
+                        <div class="option" onclick="selectOption(this, true)">B. Resistor</div>
+                        <div class="option" onclick="selectOption(this, false)">C. Arduino Uno</div>
+                        <div class="option" onclick="selectOption(this, false)">D. Breadboard</div>
+                    </div>
+                    <div id="feedback2" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question" id="question3" style="display: none;">
+                    <h4>Pertanyaan 3 dari 3</h4>
+                    <p><strong>Bahasa pemrograman apa yang digunakan untuk Arduino dalam Tinkercad?</strong></p>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">A. Python</div>
+                        <div class="option" onclick="selectOption(this, false)">B. JavaScript</div>
+                        <div class="option" onclick="selectOption(this, true)">C. C/C++</div>
+                        <div class="option" onclick="selectOption(this, false)">D. Java</div>
+                    </div>
+                    <div id="feedback3" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div id="quizResult" style="display: none; text-align: center; padding: 20px; background: #f8f9fa; border-radius: 15px; margin: 20px 0;">
+                    <h3>🎉 Hasil Kuis</h3>
+                    <p id="scoreText"></p>
+                    <div id="finalFeedback"></div>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevPage()">⬅️ Kembali</button>
+                <button class="btn" onclick="nextPage()" id="nextAfterQuiz" style="display: none;">Lanjut ➡️</button>
+            </div>
+        </div>
+
+        <!-- Halaman 8: Kesimpulan -->
+        <div class="page" id="page8">
+            <div class="title">
+                <h2>📋 Kesimpulan</h2>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h4>🌐 Tinkercad</h4>
+                    <p>Platform simulasi online gratis untuk belajar Arduino tanpa hardware fisik</p>
+                </div>
+
+                <div class="summary-card">
+                    <h4>🔧 Komponen Dasar</h4>
+                    <p>LED, Resistor, Arduino Uno, dan Breadboard adalah komponen fundamental</p>
+                </div>
+
+                <div class="summary-card">
+                    <h4>💻 Pemrograman</h4>
+                    <p>Menggunakan bahasa C/C++ dengan struktur setup() dan loop()</p>
+                </div>
+
+                <div class="summary-card">
+                    <h4>🎮 Simulasi</h4>
+                    <p>Menguji rangkaian secara real-time sebelum implementasi fisik</p>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 15px; margin: 30px 0; text-align: center;">
+                <h3>🎯 Poin Penting yang Harus Diingat:</h3>
+                <ul style="list-style: none; padding: 0; margin: 20px 0;">
+                    <li style="margin: 10px 0;">✅ Tinkercad adalah alat pembelajaran yang aman dan gratis</li>
+                    <li style="margin: 10px 0;">✅ Pahami fungsi setiap komponen sebelum merangkai</li>
+                    <li style="margin: 10px 0;">✅ Selalu test dan debug program sebelum implementasi</li>
+                    <li style="margin: 10px 0;">✅ Manfaatkan komunitas untuk berbagi dan belajar</li>
+                </ul>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevPage()">⬅️ Kembali</button>
+                <button class="btn" onclick="nextPage()">Lanjut ➡️</button>
+            </div>
+        </div>
+
+        <!-- Halaman 9: Tugas/Aktivitas -->
+        <div class="page" id="page9">
+            <div class="title">
+                <h2>📝 Tugas & Aktivitas Lanjutan</h2>
+            </div>
+
+            <div class="task-section">
+                <h3>🎯 Tugas Individu</h3>
+                
+                <div class="task-item">
+                    <h4>📋 Tugas 1: Proyek LED Blinking</h4>
+                    <p><strong>Instruksi:</strong></p>
+                    <ul>
+                        <li>Buat akun Tinkercad di <a href="https://www.tinkercad.com" target="_blank" rel="noopener noreferrer">www.tinkercad.com</a></li>
+                        <li>Buat rangkaian LED yang berkedip setiap 1 detik</li>
+                        <li>Gunakan Arduino Uno, LED, dan resistor 220Ω</li>
+                        <li>Tulis program untuk mengontrol LED</li>
+                        <li>Screenshot hasil simulasi dan kirim ke guru</li>
+                    </ul>
+                    <p><strong>Waktu:</strong> 1 minggu</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>🔔 Tugas 2: Sistem Alarm Sederhana</h4>
+                    <p><strong>Instruksi:</strong></p>
+                    <ul>
+                        <li>Buat rangkaian dengan buzzer dan LED</li>
+                        <li>Program agar buzzer berbunyi dan LED berkedip bersamaan</li>
+                        <li>Tambahkan tombol untuk mengaktifkan/menonaktifkan alarm</li>
+                        <li>Dokumentasikan proses pembuatan dalam video singkat (2-3 menit)</li>
+                    </ul>
+                    <p><strong>Waktu:</strong> 1 minggu</p>
+                </div>
+
+                <div class="task-item">
+                    <h4>👥 Tugas Kelompok: Proyek Kreatif</h4>
+                    <p><strong>Instruksi:</strong></p>
+                    <ul>
+                        <li>Bentuk kelompok 3-4 orang</li>
+                        <li>Pilih salah satu: Lampu lalu lintas, Sensor suhu dengan display, atau Sistem keamanan pintu</li>
+                        <li>Buat presentasi 10 menit tentang proyek kalian</li>
+                        <li>Sertakan: Diagram rangkaian, kode program, dan demo simulasi</li>
+                    </ul>
+                    <p><strong>Waktu:</strong> 2 minggu</p>
+                </div>
+            </div>
+
+            <div style="background: #667eea; color: white; padding: 20px; border-radius: 15px; margin: 20px 0; text-align: center;">
+                <h4>📤 Cara Pengumpulan Tugas</h4>
+                <p>Kirim hasil tugas melalui:</p>
+                <ul style="list-style: none; padding: 0;">
+                    <li>📧 Email: erwan.setiawan@sekolah.edu</li>
+                    <li>📚 Google Classroom: Kode kelas INF2024</li>
+                    <li>💾 Format: PDF untuk laporan, MP4 untuk video</li>
+                </ul>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevPage()">⬅️ Kembali</button>
+                <button class="btn" onclick="nextPage()">Lanjut ➡️</button>
+            </div>
+        </div>
+
+        <!-- Halaman 10: Penutup -->
+        <div class="page" id="page10">
+            <div class="title">
+                <h2>🎉 Selamat!</h2>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <div style="font-size: 5rem; animation: bounce 2s infinite;">🏆</div>
+                <h3 style="color: #2c3e50; margin: 20px 0;">Anda telah menyelesaikan modul pembelajaran Tinkercad Arduino!</h3>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; margin: 30px 0; text-align: center;">
+                <h3>💫 Terima Kasih</h3>
+                <p style="font-size: 1.2rem; margin: 20px 0;">
+                    Semoga pembelajaran ini bermanfaat untuk mengembangkan kemampuan kalian dalam bidang elektronika dan pemrograman Arduino.
+                </p>
+                <p style="font-size: 1.1rem;">
+                    Terus berlatih, bereksperimen, dan jangan takut untuk mencoba hal-hal baru!
+                </p>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                <h4 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">🚀 Motivasi Belajar</h4>
+                <div style="text-align: center; font-style: italic; color: #34495e;">
+                    <p>"Setiap ahli pernah menjadi pemula. Setiap pro pernah menjadi amatir. Setiap ikon pernah menjadi orang yang tidak dikenal."</p>
+                    <p><strong>- Robin Sharma</strong></p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 30px 0;">
+                <button class="btn" onclick="goToPage(1)">🔄 Ulangi Materi</button>
+                <button class="btn btn-secondary" onclick="nextPage()">📚 Lihat Referensi</button>
+                <button class="btn" onclick="window.close()">🚪 Keluar</button>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevPage()">⬅️ Kembali</button>
+                <button class="btn" onclick="nextPage()">Referensi 📚</button>
+            </div>
+        </div>
+
+        <!-- Halaman 11: Referensi -->
+        <div class="page" id="page11">
+            <div class="title">
+                <h2>📚 Referensi & Sumber</h2>
+            </div>
+
+            <div class="references">
+                <h3>📖 Sumber Pembelajaran</h3>
+                <ul>
+                    <li>
+                        <strong>Tinkercad Official Documentation</strong><br>
+                        <a href="https://www.tinkercad.com/learn" target="_blank" rel="noopener noreferrer" style="color: #667eea;">https://www.tinkercad.com/learn</a><br>
+                        Dokumentasi resmi dan tutorial dari Autodesk Tinkercad
+                    </li>
+                    <li>
+                        <strong>Arduino Official Website</strong><br>
+                        <a href="https://www.arduino.cc" target="_blank" rel="noopener noreferrer" style="color: #667eea;">https://www.arduino.cc</a><br>
+                        Situs resmi Arduino dengan dokumentasi lengkap
+                    </li>
+                    <li>
+                        <strong>Arduino Programming Reference</strong><br>
+                        <a href="https://www.arduino.cc/reference/en/" target="_blank" rel="noopener noreferrer" style="color: #667eea;">https://www.arduino.cc/reference/en/</a><br>
+                        Referensi lengkap fungsi dan syntax Arduino
+                    </li>
+                    <li>
+                        <strong>Elektronika Dasar untuk Pemula</strong><br>
+                        Penulis: Ir. Agus Setiawan, M.T.<br>
+                        Penerbit: Andi Offset (2023)
+                    </li>
+                    <li>
+                        <strong>Belajar Arduino dari Nol</strong><br>
+                        Penulis: Dr. Budi Raharjo<br>
+                        Penerbit: Informatika Bandung (2022)
+                    </li>
+                </ul>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                <h3 style="color: #2c3e50;">🌐 Sumber Online Tambahan</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin: 10px 0; padding: 10px; background: white; border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>YouTube Channel: "Arduino Tutorial Indonesia"</strong><br>
+                        Video pembelajaran Arduino dalam bahasa Indonesia
+                    </li>
+                    <li style="margin: 10px 0; padding: 10px; background: white; border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>Forum Arduino Indonesia</strong><br>
+                        Komunitas untuk diskusi dan tanya jawab
+                    </li>
+                    <li style="margin: 10px 0; padding: 10px; background: white; border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>Instructables.com</strong><br>
+                        Platform berbagi proyek DIY dan tutorial
+                    </li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 15px; margin: 20px 0; text-align: center;">
+                <h4>👨‍🏫 Kontak Pembuat</h4>
+                <p><strong>ERWAN SETIAWAN</strong></p>
+                <p>📧 erwan.setiawan@sekolah.edu</p>
+                <p>📱 +62 812-3456-7890</p>
+                <p>🏫 SMA Negeri 1 Teknologi</p>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevPage()">⬅️ Kembali</button>
+                <button class="btn" onclick="goToPage(1)">🔄 Mulai Ulang</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 11;
+        let quizScore = 0;
+        let currentQuestion = 1;
+        let dragDropCompleted = false;
+
+        // Update page counter
+        function updatePageCounter() {
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages;
+        }
+
+        // Navigation functions
+        function nextPage() {
+            if (currentPage < totalPages) {
+                document.getElementById(`page${currentPage}`).classList.remove('active');
+                currentPage++;
+                document.getElementById(`page${currentPage}`).classList.add('active');
+                updatePageCounter();
+                
+                // Reset quiz when entering quiz page
+                if (currentPage === 7) {
+                    resetQuiz();
+                }
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                document.getElementById(`page${currentPage}`).classList.remove('active');
+                currentPage--;
+                document.getElementById(`page${currentPage}`).classList.add('active');
+                updatePageCounter();
+            }
+        }
+
+        function goToPage(pageNum) {
+            document.getElementById(`page${currentPage}`).classList.remove('active');
+            currentPage = pageNum;
+            document.getElementById(`page${currentPage}`).classList.add('active');
+            updatePageCounter();
+        }
+
+        // Concept map functionality
+        function showConceptDetail(concept) {
+            const details = {
+                'tinkercad': {
+                    title: '🌐 Pengenalan Tinkercad',
+                    description: 'Tinkercad adalah platform simulasi online gratis dari Autodesk yang memungkinkan pengguna untuk merancang, mensimulasikan, dan menguji rangkaian elektronik Arduino secara virtual. Platform ini sangat cocok untuk pembelajaran karena tidak memerlukan hardware fisik dan menyediakan lingkungan yang aman untuk bereksperimen.'
+                },
+                'komponen': {
+                    title: '🔧 Komponen Elektronik',
+                    description: 'Komponen elektronik adalah bagian-bagian dasar yang digunakan dalam rangkaian. LED untuk output cahaya, resistor untuk membatasi arus, sensor untuk input data, dan breadboard sebagai tempat koneksi. Memahami fungsi setiap komponen adalah kunci sukses dalam membuat proyek Arduino.'
+                },
+                'interface': {
+                    title: '🖥️ Interface Tinkercad',
+                    description: 'Interface Tinkercad terdiri dari workspace (area kerja), component panel (panel komponen), toolbar (bilah alat), dan code editor (editor kode). Antarmuka yang intuitif memudahkan pengguna untuk drag-and-drop komponen dan membuat koneksi dengan mudah.'
+                },
+                'rangkaian': {
+                    title: '⚡ Membuat Rangkaian',
+                    description: 'Proses membuat rangkaian di Tinkercad melibatkan drag-and-drop komponen dari panel ke workspace, kemudian menghubungkannya dengan kabel virtual. Sistem akan otomatis mendeteksi koneksi yang valid dan memberikan feedback visual.'
+                },
+                'coding': {
+                    title: '💻 Pemrograman Arduino',
+                    description: 'Arduino menggunakan bahasa pemrograman C/C++ dengan struktur dasar setup() untuk inisialisasi dan loop() untuk eksekusi berulang. Tinkercad menyediakan code editor dengan syntax highlighting dan auto-complete untuk memudahkan penulisan kode.'
+                },
+                'simulasi': {
+                    title: '🎮 Simulasi & Testing',
+                    description: 'Fitur simulasi memungkinkan pengguna untuk menjalankan rangkaian secara real-time, melihat output LED, mendengar buzzer, dan mengamati perubahan sensor. Ini membantu dalam debugging dan validasi sebelum implementasi fisik.'
+                }
+            };
+
+            const detail = details[concept];
+            document.getElementById('conceptTitle').textContent = detail.title;
+            document.getElementById('conceptDescription').textContent = detail.description;
+            document.getElementById('conceptDetail').style.display = 'block';
+        }
+
+        function hideConceptDetail() {
+            document.getElementById('conceptDetail').style.display = 'none';
+        }
+
+        // Drag and Drop functionality
+        let draggedElement = null;
+        const dropTargets = {
+            'led': 'led-drop',
+            'resistor': 'resistor-drop',
+            'arduino': 'arduino-drop',
+            'breadboard': 'breadboard-drop'
+        };
+
+        // Add drag and drop event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const dragItems = document.querySelectorAll('.drag-item');
+            const dropZone = document.querySelector('.drop-zone');
+
+            dragItems.forEach(item => {
+                item.addEventListener('dragstart', function(e) {
+                    draggedElement = this;
+                    this.style.opacity = '0.5';
+                });
+
+                item.addEventListener('dragend', function(e) {
+                    this.style.opacity = '1';
+                });
+            });
+
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+
+            dropZone.addEventListener('dragleave', function(e) {
+                this.classList.remove('drag-over');
+            });
+
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                
+                if (draggedElement) {
+                    const component = draggedElement.dataset.component;
+                    const targetId = dropTargets[component];
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.textContent = draggedElement.textContent;
+                        targetElement.style.background = '#667eea';
+                        targetElement.style.color = 'white';
+                        targetElement.style.padding = '5px 10px';
+                        targetElement.style.borderRadius = '5px';
+                        draggedElement.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        function checkDragDrop() {
+            const targets = ['led-drop', 'resistor-drop', 'arduino-drop', 'breadboard-drop'];
+            let correctCount = 0;
+            
+            targets.forEach(targetId => {
+                const element = document.getElementById(targetId);
+                if (element.textContent !== 'Letakkan di sini') {
+                    correctCount++;
+                }
+            });
+
+            const feedback = document.getElementById('dragDropFeedback');
+            feedback.style.display = 'block';
+            
+            if (correctCount === 4) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = '🎉 Hebat! Semua komponen sudah dipasangkan dengan benar!';
+                dragDropCompleted = true;
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = `⚠️ Masih ada ${4 - correctCount} komponen yang belum tepat. Coba lagi!`;
+            }
+        }
+
+        function resetDragDrop() {
+            const dragItems = document.querySelectorAll('.drag-item');
+            const targets = ['led-drop', 'resistor-drop', 'arduino-drop', 'breadboard-drop'];
+            
+            dragItems.forEach(item => {
+                item.style.display = 'block';
+            });
+            
+            targets.forEach(targetId => {
+                const element = document.getElementById(targetId);
+                element.textContent = 'Letakkan di sini';
+                element.style.background = '';
+                element.style.color = '';
+                element.style.padding = '';
+                element.style.borderRadius = '';
+            });
+            
+            document.getElementById('dragDropFeedback').style.display = 'none';
+            dragDropCompleted = false;
+        }
+
+        // Quiz functionality
+        function selectOption(element, isCorrect) {
+            const options = element.parentNode.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            
+            setTimeout(() => {
+                options.forEach(opt => {
+                    opt.style.pointerEvents = 'none';
+                    if (opt.onclick.toString().includes('true')) {
+                        opt.classList.add('correct');
+                    } else if (opt.classList.contains('selected') && !isCorrect) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                
+                const feedbackId = `feedback${currentQuestion}`;
+                const feedback = document.getElementById(feedbackId);
+                feedback.style.display = 'block';
+                
+                if (isCorrect) {
+                    feedback.className = 'feedback correct';
+                    feedback.textContent = '🎉 Jawaban kamu benar! Hebat!';
+                    quizScore++;
+                } else {
+                    feedback.className = 'feedback incorrect';
+                    feedback.textContent = '❌ Yaah... salah, tapi tidak apa-apa. Cek kembali materi ini ya!';
+                }
+                
+                updateQuizProgress();
+                
+                setTimeout(() => {
+                    if (currentQuestion < 3) {
+                        document.getElementById(`question${currentQuestion}`).style.display = 'none';
+                        currentQuestion++;
+                        document.getElementById(`question${currentQuestion}`).style.display = 'block';
+                    } else {
+                        showQuizResult();
+                    }
+                }, 2000);
+            }, 500);
+        }
+
+        function updateQuizProgress() {
+            const progress = (currentQuestion / 3) * 100;
+            document.getElementById('quizProgress').style.width = progress + '%';
+        }
+
+        function showQuizResult() {
+            document.querySelectorAll('.question').forEach(q => q.style.display = 'none');
+            
+            const resultDiv = document.getElementById('quizResult');
+            const scoreText = document.getElementById('scoreText');
+            const finalFeedback = document.getElementById('finalFeedback');
+            
+            resultDiv.style.display = 'block';
+            scoreText.textContent = `Skor Anda: ${quizScore}/3 (${Math.round((quizScore/3)*100)}%)`;
+            
+            if (quizScore === 3) {
+                finalFeedback.innerHTML = '<div style="color: #27ae60; font-size: 1.2rem;">🏆 Sempurna! Anda menguasai materi dengan sangat baik!</div>';
+            } else if (quizScore === 2) {
+                finalFeedback.innerHTML = '<div style="color: #f39c12; font-size: 1.2rem;">👍 Bagus! Sedikit lagi untuk sempurna!</div>';
+            } else {
+                finalFeedback.innerHTML = '<div style="color: #e74c3c; font-size: 1.2rem;">💪 Tetap semangat! Ulangi materi dan coba lagi!</div>';
+            }
+            
+            document.getElementById('nextAfterQuiz').style.display = 'inline-block';
+        }
+
+        function resetQuiz() {
+            currentQuestion = 1;
+            quizScore = 0;
+            
+            document.querySelectorAll('.question').forEach((q, index) => {
+                if (index === 0) {
+                    q.style.display = 'block';
+                } else {
+                    q.style.display = 'none';
+                }
+                
+                const options = q.querySelectorAll('.option');
+                options.forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                const feedback = q.querySelector('.feedback');
+                if (feedback) {
+                    feedback.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextAfterQuiz').style.display = 'none';
+            document.getElementById('quizProgress').style.width = '0%';
+        }
+
+        // Initialize page counter
+        updatePageCounter();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                e.preventDefault();
+                nextPage();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevPage();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9862c2df57e19de3',t:'MTc1OTA1NzQ3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
