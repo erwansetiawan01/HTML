@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desain Level dan Kloning Pada Scratch</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .animated-title {
+            animation: bounce 2s infinite;
+        }
+
+        h1 {
+            color: #4a5568;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #2d3748;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #4a5568;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .intro-section {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .scratch-logo {
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+            background: #ff6b35;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            animation: bounce 2s infinite;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .objectives-list {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            margin: 20px 0;
+        }
+
+        .objectives-list li {
+            margin: 10px 0;
+            padding: 8px 0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .concept-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .interactive-demo {
+            background: #edf2f7;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .scratch-block {
+            background: #ff6b35;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scratch-block:hover {
+            transform: scale(1.05);
+            background: #e55a2b;
+        }
+
+        .quiz-container {
+            background: #f0fff4;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border: 2px solid #68d391;
+        }
+
+        .quiz-question {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .quiz-option {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+
+        .quiz-option.correct {
+            background: #c6f6d5;
+            border-color: #68d391;
+        }
+
+        .quiz-option.incorrect {
+            background: #fed7d7;
+            border-color: #fc8181;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .drag-drop-area {
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .draggable-item {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin: 5px;
+            cursor: move;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .draggable-item:hover {
+            transform: scale(1.05);
+            background: #764ba2;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .page-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .music-control {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .music-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .music-btn.playing {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .page {
+                padding: 20px;
+                margin: 10px 0;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .concept-map {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                text-align: center;
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-indicator" id="pageIndicator">Halaman 1 dari 11</div>
+    
+    <!-- Music Control -->
+    <div class="music-control">
+        <button class="music-btn" onclick="toggleMusic()" id="musicBtn">🎵</button>
+    </div>
+    
+    <div class="container">
+        <!-- Halaman 1: Pembuka -->
+        <div class="page active" id="page1">
+            <div class="intro-section">
+                <div class="scratch-logo animated-title">
+                    <svg width="80" height="80" viewBox="0 0 100 100" style="filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
+                        <!-- 3D Scratch Cat -->
+                        <ellipse cx="50" cy="85" rx="35" ry="8" fill="rgba(0,0,0,0.2)"/>
+                        <circle cx="50" cy="50" r="30" fill="#FF6B35"/>
+                        <circle cx="50" cy="48" r="28" fill="#FF8C42"/>
+                        <circle cx="42" cy="45" r="4" fill="white"/>
+                        <circle cx="58" cy="45" r="4" fill="white"/>
+                        <circle cx="42" cy="45" r="2" fill="black"/>
+                        <circle cx="58" cy="45" r="2" fill="black"/>
+                        <path d="M45 55 Q50 60 55 55" stroke="black" stroke-width="2" fill="none"/>
+                        <polygon points="35,35 40,25 45,35" fill="#FF6B35"/>
+                        <polygon points="65,35 60,25 55,35" fill="#FF6B35"/>
+                    </svg>
+                </div>
+                <h1 class="animated-title">Desain Level dan Kloning Pada Scratch</h1>
+                
+                <div class="info-card">
+                    <h3>📚 Mata Pelajaran: Informatika</h3>
+                    <h3>🎯 Kelas: Fase E</h3>
+                    <h3>👨‍🏫 Pembuat: ERWAN SETIAWAN</h3>
+                    <h3>🏫 Sekolah: SMAN 1 BOGOR</h3>
+                </div>
+                
+                <div style="margin: 40px 0;">
+                    <div style="font-size: 3rem; animation: bounce 2s infinite;">🚀✨🎨</div>
+                    <p style="font-size: 1.2rem; color: #4a5568; margin-top: 20px;">
+                        Selamat datang di pembelajaran interaktif tentang desain level dan kloning dalam Scratch!
+                        Mari kita jelajahi dunia pemrograman yang menyenangkan!
+                    </p>
+                </div>
+                
+                <button class="btn" onclick="nextPage()">Mulai Pembelajaran 🎯</button>
+            </div>
+        </div>
+
+        <!-- Halaman 2: Tujuan Pembelajaran -->
+        <div class="page" id="page2">
+            <h1>🎯 Tujuan Pembelajaran</h1>
+            
+            <div class="objectives-list">
+                <h2>Tujuan Umum</h2>
+                <p style="font-size: 1.1rem; margin-bottom: 20px;">
+                    Setelah mengikuti pembelajaran, murid diharapkan mampu:
+                </p>
+                
+                <ul>
+                    <li>🧠 <strong>Mengajarkan Efisiensi dan Abstraksi</strong> - Memahami konsep inti Computational Thinking secara kreatif</li>
+                    <li>🎮 <strong>Mengelola Objek Secara Dinamis</strong> - Mengatur sprite dan objek game dengan efektif</li>
+                    <li>💻 <strong>Memperkenalkan Pemrograman Berorientasi Objek</strong> - Dasar-dasar OOP dalam konteks Scratch</li>
+                    <li>⚡ <strong>Mengoptimalkan Performa Game</strong> - Membuat game yang berjalan lancar dan efisien</li>
+                </ul>
+            </div>
+            
+            <div class="interactive-demo">
+                <h3>🎪 Apa yang akan kamu pelajari?</h3>
+                <div style="margin: 20px 0;">
+                    <span class="scratch-block">Kloning Sprite</span>
+                    <span class="scratch-block">Desain Level</span>
+                    <span class="scratch-block">Optimasi Game</span>
+                    <span class="scratch-block">Abstraksi</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Halaman 3: Petunjuk Penggunaan -->
+        <div class="page" id="page3">
+            <h1>📖 Petunjuk Penggunaan Media</h1>
+            
+            <div class="concept-map">
+                <div class="concept-card">
+                    <div class="icon">🖱️</div>
+                    <h3>Navigasi</h3>
+                    <p>Gunakan tombol "Selanjutnya" dan "Sebelumnya" untuk berpindah halaman. Klik tombol interaktif untuk eksplorasi lebih dalam!</p>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="icon">🎯</div>
+                    <h3>Simbol & Ikon</h3>
+                    <p>🎮 = Demo Interaktif<br>📝 = Latihan<br>🧠 = Tips Penting<br>⭐ = Kuis</p>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="icon">⏱️</div>
+                    <h3>Estimasi Waktu</h3>
+                    <p>Total pembelajaran: 45-60 menit<br>Setiap bagian: 5-8 menit<br>Kuis: 10 menit</p>
+                </div>
+            </div>
+            
+            <div class="interactive-demo">
+                <h3>🎪 Coba Interaksi Ini!</h3>
+                <p>Klik blok Scratch di bawah untuk melihat animasi:</p>
+                <div id="demoBlocks">
+                    <span class="scratch-block" onclick="animateBlock(this)">Ketika diklik</span>
+                    <span class="scratch-block" onclick="animateBlock(this)">Kloning diri</span>
+                    <span class="scratch-block" onclick="animateBlock(this)">Bergerak 10 langkah</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Halaman 4: Peta Konsep -->
+        <div class="page" id="page4">
+            <h1>🗺️ Peta Konsep Pembelajaran</h1>
+            
+            <div class="concept-map">
+                <div class="concept-card" onclick="showConceptDetail('kloning')">
+                    <div class="icon">👥</div>
+                    <h3>Kloning Sprite</h3>
+                    <p>Membuat salinan objek secara dinamis</p>
+                </div>
+                
+                <div class="concept-card" onclick="showConceptDetail('level')">
+                    <div class="icon">🏗️</div>
+                    <h3>Desain Level</h3>
+                    <p>Merancang tahapan permainan yang menarik</p>
+                </div>
+                
+                <div class="concept-card" onclick="showConceptDetail('optimasi')">
+                    <div class="icon">⚡</div>
+                    <h3>Optimasi Performa</h3>
+                    <p>Membuat game berjalan lancar</p>
+                </div>
+                
+                <div class="concept-card" onclick="showConceptDetail('abstraksi')">
+                    <div class="icon">🧠</div>
+                    <h3>Abstraksi</h3>
+                    <p>Menyederhanakan kompleksitas</p>
+                </div>
+            </div>
+            
+            <div id="conceptDetail" class="interactive-demo" style="display: none;">
+                <h3 id="conceptTitle">Detail Konsep</h3>
+                <p id="conceptDescription">Klik salah satu kartu konsep di atas untuk melihat detail!</p>
+            </div>
+        </div>
+
+        <!-- Halaman 5: Materi Inti - Kloning -->
+        <div class="page" id="page5">
+            <h1>👥 Kloning Sprite dalam Scratch</h1>
+            
+            <h2>Apa itu Kloning?</h2>
+            <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px;">
+                Kloning adalah proses membuat salinan (duplikat) dari sprite yang sudah ada. 
+                Bayangkan seperti mesin fotokopi yang bisa membuat banyak salinan dari satu dokumen!
+            </p>
+            
+            <div class="interactive-demo">
+                <h3>🎮 Demo Kloning Interaktif</h3>
+                <p>Klik tombol di bawah untuk melihat simulasi kloning:</p>
+                <div id="cloningDemo">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin: 20px 0;">
+                        <div id="originalSprite" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="60" height="60" viewBox="0 0 60 60" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
+                                <ellipse cx="30" cy="55" rx="20" ry="3" fill="rgba(0,0,0,0.2)"/>
+                                <circle cx="30" cy="30" r="18" fill="#FF6B35"/>
+                                <circle cx="30" cy="28" r="16" fill="#FF8C42"/>
+                                <circle cx="25" cy="26" r="2" fill="white"/>
+                                <circle cx="35" cy="26" r="2" fill="white"/>
+                                <circle cx="25" cy="26" r="1" fill="black"/>
+                                <circle cx="35" cy="26" r="1" fill="black"/>
+                                <path d="M27 32 Q30 35 33 32" stroke="black" stroke-width="1" fill="none"/>
+                                <polygon points="21,21 24,15 27,21" fill="#FF6B35"/>
+                                <polygon points="39,21 36,15 33,21" fill="#FF6B35"/>
+                            </svg>
+                        </div>
+                        <button class="btn-secondary" onclick="cloneSprite()">Kloning!</button>
+                        <div id="cloneContainer" style="display: flex; gap: 10px;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>🧠 Mengapa Kloning Penting?</h3>
+            <ul style="font-size: 1.1rem; line-height: 1.8;">
+                <li><strong>Efisiensi:</strong> Tidak perlu membuat sprite baru berulang kali</li>
+                <li><strong>Dinamis:</strong> Jumlah objek bisa berubah saat game berjalan</li>
+                <li><strong>Memori:</strong> Menghemat penggunaan memori</li>
+                <li><strong>Kontrol:</strong> Mudah mengatur perilaku semua klon</li>
+            </ul>
+            
+            <div class="quiz-container">
+                <h3>📝 Latihan Cepat</h3>
+                <p>Dalam game menembak, apa keuntungan menggunakan kloning untuk peluru?</p>
+                <button class="btn-secondary" onclick="showAnswer('cloning')">Lihat Jawaban</button>
+                <div id="cloningAnswer" style="display: none; margin-top: 15px; padding: 15px; background: #e6fffa; border-radius: 10px;">
+                    <strong>Jawaban:</strong> Dengan kloning, kita bisa membuat peluru sebanyak yang dibutuhkan tanpa harus membuat sprite peluru yang banyak di awal. Setiap klon peluru bisa bergerak dan hilang secara independen!
+                </div>
+            </div>
+        </div>
+
+        <!-- Halaman 6: Materi Inti - Desain Level -->
+        <div class="page" id="page6">
+            <h1>🏗️ Desain Level yang Menarik</h1>
+            
+            <h2>Prinsip Desain Level</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="icon">📈</div>
+                    <h3>Progresivitas</h3>
+                    <p>Level semakin menantang secara bertahap</p>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="icon">🎯</div>
+                    <h3>Tujuan Jelas</h3>
+                    <p>Pemain tahu apa yang harus dicapai</p>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="icon">⚖️</div>
+                    <h3>Keseimbangan</h3>
+                    <p>Tidak terlalu mudah atau sulit</p>
+                </div>
+            </div>
+            
+            <h3>🎨 Elemen Desain Level</h3>
+            <div class="interactive-demo">
+                <h4>Drag & Drop: Susun Elemen Level!</h4>
+                <div class="objectives-list" style="margin-bottom: 20px;">
+                    <h5>📋 Petunjuk:</h5>
+                    <ul style="font-size: 1rem;">
+                        <li>Seret elemen dari bawah ke area desain</li>
+                        <li>Susun platform sebagai tempat berpijak</li>
+                        <li>Tempatkan musuh sebagai tantangan</li>
+                        <li>Letakkan koin sebagai reward</li>
+                        <li>Akhiri dengan tujuan (finish line)</li>
+                    </ul>
+                </div>
+                <div class="drag-drop-area" id="levelDesignArea">
+                    <p>Seret elemen ke sini untuk membuat level!</p>
+                </div>
+                <div style="margin: 20px 0;">
+                    <span class="draggable-item" draggable="true" ondragstart="drag(event)" data-element="platform">
+                        <svg width="20" height="20" viewBox="0 0 40 40" style="margin-right: 8px;">
+                            <rect x="5" y="25" width="30" height="10" fill="#8B4513"/>
+                            <rect x="0" y="20" width="40" height="10" fill="#A0522D"/>
+                            <rect x="2" y="18" width="36" height="4" fill="#CD853F"/>
+                        </svg>
+                        Platform
+                    </span>
+                    <span class="draggable-item" draggable="true" ondragstart="drag(event)" data-element="enemy">
+                        <svg width="20" height="20" viewBox="0 0 40 40" style="margin-right: 8px;">
+                            <ellipse cx="20" cy="35" rx="15" ry="3" fill="rgba(0,0,0,0.3)"/>
+                            <circle cx="20" cy="20" r="12" fill="#8A2BE2"/>
+                            <circle cx="20" cy="18" r="10" fill="#9932CC"/>
+                            <circle cx="16" cy="16" r="2" fill="red"/>
+                            <circle cx="24" cy="16" r="2" fill="red"/>
+                            <path d="M15 22 L25 22" stroke="white" stroke-width="2"/>
+                        </svg>
+                        Musuh
+                    </span>
+                    <span class="draggable-item" draggable="true" ondragstart="drag(event)" data-element="coin">
+                        <svg width="20" height="20" viewBox="0 0 40 40" style="margin-right: 8px;">
+                            <ellipse cx="20" cy="35" rx="8" ry="2" fill="rgba(0,0,0,0.2)"/>
+                            <circle cx="20" cy="20" r="10" fill="#FFD700"/>
+                            <circle cx="20" cy="18" r="8" fill="#FFF700"/>
+                            <text x="20" y="24" text-anchor="middle" font-size="12" fill="#B8860B">$</text>
+                        </svg>
+                        Koin
+                    </span>
+                    <span class="draggable-item" draggable="true" ondragstart="drag(event)" data-element="goal">
+                        <svg width="20" height="20" viewBox="0 0 40 40" style="margin-right: 8px;">
+                            <rect x="5" y="30" width="4" height="8" fill="#654321"/>
+                            <polygon points="9,30 35,25 35,15 9,20" fill="#FF0000"/>
+                            <polygon points="9,20 35,15 35,5 9,10" fill="#FFFFFF"/>
+                        </svg>
+                        Tujuan
+                    </span>
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button class="btn-secondary" onclick="resetLevelDesign()">🔄 Reset Level</button>
+                    <button class="btn" onclick="saveLevelDesign()">💾 Simpan Desain</button>
+                </div>
+            </div>
+            
+            <h3>💡 Tips Desain Level</h3>
+            <div class="objectives-list">
+                <ul>
+                    <li>Mulai dengan level tutorial yang mudah</li>
+                    <li>Perkenalkan mekanik baru secara bertahap</li>
+                    <li>Berikan reward yang memotivasi</li>
+                    <li>Buat checkpoint untuk level yang panjang</li>
+                    <li>Test level dengan orang lain</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Halaman 7: Interaktivitas & Latihan -->
+        <div class="page" id="page7">
+            <h1>🎪 Latihan Interaktif</h1>
+            
+            <h2>🎮 Simulasi Kloning</h2>
+            <div class="interactive-demo">
+                <h3>Buat Hujan Bintang!</h3>
+                <p>Klik tombol untuk membuat bintang jatuh dari atas:</p>
+                <button class="btn" onclick="createStar()">Buat Bintang ⭐</button>
+                <button class="btn-secondary" onclick="clearStars()">Bersihkan</button>
+                <div id="starContainer" style="position: relative; height: 200px; background: linear-gradient(to bottom, #1a202c, #2d3748); border-radius: 15px; margin: 20px 0; overflow: hidden;"></div>
+            </div>
+            
+            <h2>🧩 Matching Game</h2>
+            <div class="quiz-container">
+                <h3>Pasangkan Konsep dengan Definisi!</h3>
+                <div id="matchingGame">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                        <div>
+                            <h4>Konsep:</h4>
+                            <div class="quiz-option" onclick="selectConcept(this, 'kloning')" data-concept="kloning">Kloning</div>
+                            <div class="quiz-option" onclick="selectConcept(this, 'abstraksi')" data-concept="abstraksi">Abstraksi</div>
+                            <div class="quiz-option" onclick="selectConcept(this, 'optimasi')" data-concept="optimasi">Optimasi</div>
+                        </div>
+                        <div>
+                            <h4>Definisi:</h4>
+                            <div class="quiz-option" onclick="selectDefinition(this, 'kloning')" data-definition="kloning">Membuat salinan objek</div>
+                            <div class="quiz-option" onclick="selectDefinition(this, 'abstraksi')" data-definition="abstraksi">Menyederhanakan kompleksitas</div>
+                            <div class="quiz-option" onclick="selectDefinition(this, 'optimasi')" data-definition="optimasi">Meningkatkan performa</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="matchingFeedback"></div>
+            </div>
+            
+            <h2>🤔 Pertanyaan Reflektif</h2>
+            <div class="interactive-demo">
+                <h3>Bagaimana kloning bisa membantu dalam game yang kamu buat?</h3>
+                <textarea id="reflectionAnswer" style="width: 100%; height: 100px; padding: 15px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 1rem;" placeholder="Tulis refleksi kamu di sini..."></textarea>
+                <button class="btn" onclick="saveReflection()">Simpan Refleksi</button>
+                <div id="reflectionFeedback"></div>
+            </div>
+        </div>
+
+        <!-- Halaman 8: Kuis Evaluasi -->
+        <div class="page" id="page8">
+            <h1>⭐ Kuis Evaluasi</h1>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="quizProgress" style="width: 0%"></div>
+            </div>
+            
+            <div id="quizContainer">
+                <div class="quiz-container" id="question1">
+                    <div class="quiz-question">1. Apa keuntungan utama menggunakan kloning dalam Scratch?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectAnswer(this, 1, false)">A. Membuat sprite lebih besar</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, 1, true)">B. Membuat banyak salinan objek secara efisien</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, 1, false)">C. Mengubah warna sprite</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, 1, false)">D. Menambah suara pada sprite</div>
+                    </div>
+                    <div id="feedback1" class="feedback" style="display: none;"></div>
+                </div>
+                
+                <div class="quiz-container" id="question2" style="display: none;">
+                    <div class="quiz-question">2. Dalam desain level, apa yang dimaksud dengan progresivitas?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectAnswer(this, 2, false)">A. Level yang semakin mudah</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, 2, true)">B. Level yang semakin menantang secara bertahap</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, 2, false)">C. Level yang sama sulitnya</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, 2, false)">D. Level yang acak tingkat kesulitannya</div>
+                    </div>
+                    <div id="feedback2" class="feedback" style="display: none;"></div>
+                </div>
+                
+                <div class="quiz-container" id="question3" style="display: none;">
+                    <div class="quiz-question">3. Manakah yang BUKAN prinsip abstraksi dalam computational thinking?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectAnswer(this, 3, false)">A. Menyederhanakan masalah kompleks</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, 3, false)">B. Fokus pada hal-hal penting</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, 3, true)">C. Membuat semua detail terlihat</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, 3, false)">D. Mengabaikan detail yang tidak perlu</div>
+                    </div>
+                    <div id="feedback3" class="feedback" style="display: none;"></div>
+                </div>
+            </div>
+            
+            <div id="quizResult" style="display: none;" class="interactive-demo">
+                <h2>🎉 Hasil Kuis</h2>
+                <div id="scoreDisplay"></div>
+                <button class="btn" onclick="retakeQuiz()">Ulangi Kuis</button>
+            </div>
+        </div>
+
+        <!-- Halaman 9: Kesimpulan -->
+        <div class="page" id="page9">
+            <h1>📋 Kesimpulan</h1>
+            
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="icon">👥</div>
+                    <h3>Kloning</h3>
+                    <p>Membuat salinan objek secara dinamis untuk efisiensi dan fleksibilitas dalam game</p>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="icon">🏗️</div>
+                    <h3>Desain Level</h3>
+                    <p>Merancang tahapan permainan yang progresif, seimbang, dan menarik untuk dimainkan</p>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="icon">🧠</div>
+                    <h3>Computational Thinking</h3>
+                    <p>Menggunakan abstraksi dan efisiensi untuk memecahkan masalah pemrograman</p>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="icon">⚡</div>
+                    <h3>Optimasi</h3>
+                    <p>Membuat game yang berjalan lancar dengan manajemen objek yang baik</p>
+                </div>
+            </div>
+            
+            <div class="objectives-list">
+                <h2>🎯 Poin Penting yang Harus Diingat:</h2>
+                <ul>
+                    <li>Kloning membantu membuat game lebih dinamis dan efisien</li>
+                    <li>Desain level yang baik mempertimbangkan progresivitas dan keseimbangan</li>
+                    <li>Abstraksi membantu menyederhanakan masalah kompleks</li>
+                    <li>Optimasi penting untuk performa game yang baik</li>
+                    <li>Computational thinking adalah keterampilan penting dalam pemrograman</li>
+                </ul>
+            </div>
+            
+            <div class="interactive-demo">
+                <h3>🌟 Selamat!</h3>
+                <p style="font-size: 1.2rem;">
+                    Kamu telah menyelesaikan pembelajaran tentang Desain Level dan Kloning pada Scratch! 
+                    Sekarang kamu siap untuk membuat game yang lebih menarik dan efisien.
+                </p>
+            </div>
+        </div>
+
+        <!-- Halaman 10: Tugas Lanjutan -->
+        <div class="page" id="page10">
+            <h1>📝 Tugas & Aktivitas Lanjutan</h1>
+            
+            <h2>🎮 Proyek Individu</h2>
+            <div class="info-card">
+                <h3>Buat Game Sederhana dengan Kloning!</h3>
+                <p style="text-align: left; margin: 15px 0;">
+                    <strong>Instruksi:</strong><br>
+                    1. Pilih tema game (contoh: menangkap buah, menembak asteroid, mengumpulkan koin)<br>
+                    2. Gunakan kloning untuk membuat objek yang berulang<br>
+                    3. Buat minimal 3 level dengan tingkat kesulitan yang berbeda<br>
+                    4. Implementasikan sistem skor<br>
+                    5. Tambahkan efek suara dan animasi
+                </p>
+            </div>
+            
+            <h2>👥 Aktivitas Kelompok</h2>
+            <div class="concept-map">
+                <div class="concept-card">
+                    <div class="icon">🎨</div>
+                    <h3>Desain Level</h3>
+                    <p>Kelompok membuat 5 level untuk game yang sama dengan tema berbeda</p>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="icon">🧪</div>
+                    <h3>Testing</h3>
+                    <p>Saling menguji game kelompok lain dan memberikan feedback</p>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="icon">📊</div>
+                    <h3>Presentasi</h3>
+                    <p>Presentasikan game dan jelaskan penggunaan kloning di dalamnya</p>
+                </div>
+            </div>
+            
+            <h2>📋 Kriteria Penilaian</h2>
+            <div class="objectives-list">
+                <ul>
+                    <li><strong>Kreativitas (25%):</strong> Originalitas ide dan tema game</li>
+                    <li><strong>Implementasi Kloning (25%):</strong> Penggunaan kloning yang tepat dan efektif</li>
+                    <li><strong>Desain Level (25%):</strong> Progresivitas dan keseimbangan level</li>
+                    <li><strong>Fungsionalitas (25%):</strong> Game berjalan tanpa error dan sesuai tujuan</li>
+                </ul>
+            </div>
+            
+            <div class="interactive-demo">
+                <h3>📤 Pengumpulan Tugas</h3>
+                <p>Kumpulkan file Scratch (.sb3) dan video demo game (maksimal 3 menit) ke:</p>
+                <button class="btn" onclick="openSubmission()">Google Classroom 📚</button>
+                <p style="margin-top: 15px;"><strong>Deadline:</strong> 2 minggu dari hari ini</p>
+            </div>
+        </div>
+
+        <!-- Halaman 11: Penutup -->
+        <div class="page" id="page11">
+            <div class="intro-section">
+                <div class="scratch-logo">
+                    <svg width="80" height="80" viewBox="0 0 100 100" style="filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
+                        <!-- 3D Celebration -->
+                        <circle cx="50" cy="50" r="35" fill="#FF6B35"/>
+                        <circle cx="50" cy="48" r="32" fill="#FF8C42"/>
+                        <text x="50" y="58" text-anchor="middle" font-size="30" fill="white">🎉</text>
+                        <circle cx="25" cy="25" r="3" fill="#FFD700" opacity="0.8">
+                            <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="75" cy="25" r="3" fill="#FFD700" opacity="0.8">
+                            <animate attributeName="r" values="3;6;3" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="25" cy="75" r="3" fill="#FFD700" opacity="0.8">
+                            <animate attributeName="r" values="3;6;3" dur="2s" begin="1s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="75" cy="75" r="3" fill="#FFD700" opacity="0.8">
+                            <animate attributeName="r" values="3;6;3" dur="2s" begin="1.5s" repeatCount="indefinite"/>
+                        </circle>
+                    </svg>
+                </div>
+                <h1>Terima Kasih!</h1>
+                
+                <div class="info-card">
+                    <h2>🌟 Motivasi Belajar</h2>
+                    <p style="font-size: 1.2rem; line-height: 1.6;">
+                        "Setiap programmer hebat pernah menjadi pemula. Yang membedakan adalah ketekunan dalam belajar dan berlatih. 
+                        Terus eksplorasi, terus berkreasi, dan jangan takut untuk mencoba hal baru!"
+                    </p>
+                </div>
+                
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="icon">🔄</div>
+                        <h3>Ulangi Materi</h3>
+                        <button class="btn-secondary" onclick="goToPage(1)">Mulai Lagi</button>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="icon">📚</div>
+                        <h3>Pelajari Lebih Lanjut</h3>
+                        <button class="btn-secondary" onclick="showResources()">Lihat Sumber</button>
+                    </div>
+                </div>
+                
+                <div style="margin: 40px 0;">
+                    <h3>🎯 Langkah Selanjutnya:</h3>
+                    <div class="objectives-list">
+                        <ul style="text-align: left;">
+                            <li>Praktikkan konsep yang telah dipelajari</li>
+                            <li>Eksplorasi fitur-fitur lain di Scratch</li>
+                            <li>Bergabung dengan komunitas Scratch online</li>
+                            <li>Bagikan karya kamu dengan teman-teman</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="font-size: 2rem; margin: 30px 0;">
+                    🚀 Selamat Berkarya! 🎨✨
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" onclick="prevPage()" id="prevBtn">⬅️ Sebelumnya</button>
+        <button class="nav-btn" onclick="nextPage()" id="nextBtn">Selanjutnya ➡️</button>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 11;
+        let quizScore = 0;
+        let currentQuestion = 1;
+        let selectedConcept = null;
+        let selectedDefinition = null;
+        let matchedPairs = 0;
+        let isPlaying = false;
+        let audioContext;
+        let backgroundMusic;
+
+        function updatePageIndicator() {
+            document.getElementById('pageIndicator').textContent = `Halaman ${currentPage} dari ${totalPages}`;
+        }
+
+        function showPage(pageNum) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show current page
+            document.getElementById(`page${pageNum}`).classList.add('active');
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').style.display = pageNum === 1 ? 'none' : 'inline-block';
+            document.getElementById('nextBtn').style.display = pageNum === totalPages ? 'none' : 'inline-block';
+            
+            updatePageIndicator();
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                playClickSound();
+                currentPage++;
+                showPage(currentPage);
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                playClickSound();
+                currentPage--;
+                showPage(currentPage);
+            }
+        }
+
+        function goToPage(pageNum) {
+            currentPage = pageNum;
+            showPage(currentPage);
+        }
+
+        // Interactive functions
+        function animateBlock(block) {
+            playClickSound();
+            block.style.transform = 'scale(1.2) rotate(5deg)';
+            block.style.background = '#e55a2b';
+            setTimeout(() => {
+                block.style.transform = 'scale(1) rotate(0deg)';
+                block.style.background = '#ff6b35';
+            }, 300);
+        }
+
+        function showConceptDetail(concept) {
+            const details = {
+                kloning: {
+                    title: '👥 Kloning Sprite',
+                    description: 'Kloning memungkinkan kita membuat salinan sprite secara dinamis. Ini sangat berguna untuk membuat objek yang jumlahnya berubah-ubah seperti peluru, musuh, atau item koleksi dalam game.'
+                },
+                level: {
+                    title: '🏗️ Desain Level',
+                    description: 'Desain level yang baik mempertimbangkan progresivitas (semakin sulit), keseimbangan (tidak terlalu mudah/sulit), dan tujuan yang jelas untuk memberikan pengalaman bermain yang menyenangkan.'
+                },
+                optimasi: {
+                    title: '⚡ Optimasi Performa',
+                    description: 'Optimasi meliputi pengelolaan memori yang efisien, menghapus objek yang tidak diperlukan, dan menggunakan algoritma yang tepat agar game berjalan lancar tanpa lag.'
+                },
+                abstraksi: {
+                    title: '🧠 Abstraksi',
+                    description: 'Abstraksi adalah proses menyederhanakan masalah kompleks dengan fokus pada hal-hal penting dan mengabaikan detail yang tidak perlu. Ini membantu kita berpikir lebih sistematis.'
+                }
+            };
+            
+            document.getElementById('conceptDetail').style.display = 'block';
+            document.getElementById('conceptTitle').textContent = details[concept].title;
+            document.getElementById('conceptDescription').textContent = details[concept].description;
+        }
+
+        let cloneCount = 0;
+        function cloneSprite() {
+            playClickSound();
+            cloneCount++;
+            const container = document.getElementById('cloneContainer');
+            const clone = document.createElement('div');
+            clone.style.cssText = 'width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; animation: bounce 1s ease-out;';
+            clone.innerHTML = `
+                <svg width="50" height="50" viewBox="0 0 50 50" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
+                    <ellipse cx="25" cy="45" rx="15" ry="2" fill="rgba(0,0,0,0.2)"/>
+                    <circle cx="25" cy="25" r="15" fill="#FF6B35"/>
+                    <circle cx="25" cy="23" r="13" fill="#FF8C42"/>
+                    <circle cx="21" cy="21" r="1.5" fill="white"/>
+                    <circle cx="29" cy="21" r="1.5" fill="white"/>
+                    <circle cx="21" cy="21" r="0.8" fill="black"/>
+                    <circle cx="29" cy="21" r="0.8" fill="black"/>
+                    <path d="M22 27 Q25 30 28 27" stroke="black" stroke-width="1" fill="none"/>
+                    <polygon points="18,18 20,13 22,18" fill="#FF6B35"/>
+                    <polygon points="32,18 30,13 28,18" fill="#FF6B35"/>
+                </svg>
+            `;
+            container.appendChild(clone);
+            
+            if (cloneCount >= 5) {
+                setTimeout(() => {
+                    container.innerHTML = '';
+                    cloneCount = 0;
+                }, 2000);
+            }
+        }
+
+        function showAnswer(type) {
+            document.getElementById(type + 'Answer').style.display = 'block';
+        }
+
+        // Drag and drop functionality
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.dataset.element);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const area = document.getElementById('levelDesignArea');
+            
+            const elements = {
+                platform: `<svg width="40" height="40" viewBox="0 0 40 40" style="margin: 5px;">
+                    <rect x="5" y="25" width="30" height="10" fill="#8B4513"/>
+                    <rect x="0" y="20" width="40" height="10" fill="#A0522D"/>
+                    <rect x="2" y="18" width="36" height="4" fill="#CD853F"/>
+                </svg>`,
+                enemy: `<svg width="40" height="40" viewBox="0 0 40 40" style="margin: 5px;">
+                    <ellipse cx="20" cy="35" rx="15" ry="3" fill="rgba(0,0,0,0.3)"/>
+                    <circle cx="20" cy="20" r="12" fill="#8A2BE2"/>
+                    <circle cx="20" cy="18" r="10" fill="#9932CC"/>
+                    <circle cx="16" cy="16" r="2" fill="red"/>
+                    <circle cx="24" cy="16" r="2" fill="red"/>
+                    <path d="M15 22 L25 22" stroke="white" stroke-width="2"/>
+                </svg>`,
+                coin: `<svg width="40" height="40" viewBox="0 0 40 40" style="margin: 5px;">
+                    <ellipse cx="20" cy="35" rx="8" ry="2" fill="rgba(0,0,0,0.2)"/>
+                    <circle cx="20" cy="20" r="10" fill="#FFD700"/>
+                    <circle cx="20" cy="18" r="8" fill="#FFF700"/>
+                    <text x="20" y="24" text-anchor="middle" font-size="12" fill="#B8860B">$</text>
+                </svg>`,
+                goal: `<svg width="40" height="40" viewBox="0 0 40 40" style="margin: 5px;">
+                    <rect x="5" y="30" width="4" height="8" fill="#654321"/>
+                    <polygon points="9,30 35,25 35,15 9,20" fill="#FF0000"/>
+                    <polygon points="9,20 35,15 35,5 9,10" fill="#FFFFFF"/>
+                </svg>`
+            };
+            
+            area.innerHTML += elements[data];
+        }
+
+        // Setup drag and drop
+        document.getElementById('levelDesignArea').addEventListener('dragover', allowDrop);
+        document.getElementById('levelDesignArea').addEventListener('drop', drop);
+
+        // Star animation
+        function createStar() {
+            const container = document.getElementById('starContainer');
+            const star = document.createElement('div');
+            star.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: ${Math.random() * 90}%;
+                font-size: 1.5rem;
+                animation: fall 3s linear forwards;
+            `;
+            star.textContent = '⭐';
+            container.appendChild(star);
+            
+            setTimeout(() => {
+                if (star.parentNode) {
+                    star.parentNode.removeChild(star);
+                }
+            }, 3000);
+        }
+
+        function clearStars() {
+            document.getElementById('starContainer').innerHTML = '';
+        }
+
+        // Level design functions
+        function resetLevelDesign() {
+            const area = document.getElementById('levelDesignArea');
+            area.innerHTML = '<p>Seret elemen ke sini untuk membuat level!</p>';
+        }
+
+        function saveLevelDesign() {
+            const area = document.getElementById('levelDesignArea');
+            const elements = area.querySelectorAll('span');
+            if (elements.length > 0) {
+                alert('🎉 Desain level tersimpan! Kamu telah membuat level dengan ' + elements.length + ' elemen. Bagus sekali!');
+            } else {
+                alert('⚠️ Belum ada elemen yang ditempatkan. Coba seret beberapa elemen ke area desain terlebih dahulu!');
+            }
+        }
+
+        // Add CSS for falling animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(200px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Matching game
+        function selectConcept(element, concept) {
+            document.querySelectorAll('[data-concept]').forEach(el => el.classList.remove('correct'));
+            element.classList.add('correct');
+            selectedConcept = concept;
+            checkMatch();
+        }
+
+        function selectDefinition(element, definition) {
+            document.querySelectorAll('[data-definition]').forEach(el => el.classList.remove('correct'));
+            element.classList.add('correct');
+            selectedDefinition = definition;
+            checkMatch();
+        }
+
+        function checkMatch() {
+            if (selectedConcept && selectedDefinition) {
+                const feedback = document.getElementById('matchingFeedback');
+                if (selectedConcept === selectedDefinition) {
+                    feedback.innerHTML = '<div class="feedback correct">✅ Benar! Pasangan yang tepat!</div>';
+                    matchedPairs++;
+                    if (matchedPairs === 3) {
+                        feedback.innerHTML += '<div class="feedback correct">🎉 Selamat! Semua pasangan benar!</div>';
+                    }
+                } else {
+                    feedback.innerHTML = '<div class="feedback incorrect">❌ Belum tepat, coba lagi!</div>';
+                }
+                selectedConcept = null;
+                selectedDefinition = null;
+            }
+        }
+
+        // Reflection
+        function saveReflection() {
+            const answer = document.getElementById('reflectionAnswer').value;
+            const feedback = document.getElementById('reflectionFeedback');
+            if (answer.trim()) {
+                feedback.innerHTML = '<div class="feedback correct">✅ Refleksi tersimpan! Terus berpikir kritis!</div>';
+            } else {
+                feedback.innerHTML = '<div class="feedback incorrect">❌ Mohon isi refleksi terlebih dahulu!</div>';
+            }
+        }
+
+        // Quiz functionality
+        function selectAnswer(element, questionNum, isCorrect) {
+            const options = element.parentNode.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                opt.onclick = null;
+            });
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                quizScore++;
+                playSuccessSound();
+                document.getElementById(`feedback${questionNum}`).innerHTML = '✅ Jawaban kamu benar! Hebat!';
+                document.getElementById(`feedback${questionNum}`).className = 'feedback correct';
+            } else {
+                element.classList.add('incorrect');
+                playClickSound();
+                document.getElementById(`feedback${questionNum}`).innerHTML = '❌ Yaah... salah, coba lagi ya. Cek kembali materi ini.';
+                document.getElementById(`feedback${questionNum}`).className = 'feedback incorrect';
+            }
+            
+            document.getElementById(`feedback${questionNum}`).style.display = 'block';
+            
+            setTimeout(() => {
+                if (currentQuestion < 3) {
+                    document.getElementById(`question${currentQuestion}`).style.display = 'none';
+                    currentQuestion++;
+                    document.getElementById(`question${currentQuestion}`).style.display = 'block';
+                    updateQuizProgress();
+                } else {
+                    showQuizResult();
+                }
+            }, 2000);
+        }
+
+        function updateQuizProgress() {
+            const progress = (currentQuestion - 1) / 3 * 100;
+            document.getElementById('quizProgress').style.width = progress + '%';
+        }
+
+        function showQuizResult() {
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('quizProgress').style.width = '100%';
+            
+            const percentage = (quizScore / 3) * 100;
+            let message = '';
+            
+            if (percentage >= 80) {
+                message = '🎉 Luar biasa! Kamu menguasai materi dengan sangat baik!';
+            } else if (percentage >= 60) {
+                message = '👍 Bagus! Kamu cukup memahami materi, tapi masih bisa lebih baik lagi.';
+            } else {
+                message = '💪 Jangan menyerah! Coba ulangi materi dan kuis lagi ya.';
+            }
+            
+            document.getElementById('scoreDisplay').innerHTML = `
+                <h3>Skor: ${quizScore}/3 (${percentage.toFixed(0)}%)</h3>
+                <p>${message}</p>
+            `;
+        }
+
+        function retakeQuiz() {
+            currentQuestion = 1;
+            quizScore = 0;
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'block';
+            
+            // Reset all questions
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`question${i}`).style.display = i === 1 ? 'block' : 'none';
+                document.getElementById(`feedback${i}`).style.display = 'none';
+                
+                const options = document.getElementById(`question${i}`).querySelectorAll('.quiz-option');
+                options.forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                    opt.onclick = function() {
+                        selectAnswer(this, i, this.textContent.includes('B. Membuat banyak salinan objek secara efisien') || 
+                                                this.textContent.includes('B. Level yang semakin menantang secara bertahap') ||
+                                                this.textContent.includes('C. Membuat semua detail terlihat'));
+                    };
+                });
+            }
+            
+            updateQuizProgress();
+        }
+
+        function openSubmission() {
+            window.open('https://classroom.google.com', '_blank', 'noopener,noreferrer');
+        }
+
+        function showResources() {
+            alert('Sumber pembelajaran:\n\n1. Scratch Official Website: scratch.mit.edu\n2. Scratch Wiki: wiki.scratch.mit.edu\n3. Code.org - Scratch Tutorials\n4. YouTube: Scratch Programming Tutorials\n5. Buku: "Scratch Programming for Teens"');
+        }
+
+        // Music functions
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                createBackgroundMusic();
+            }
+        }
+
+        function createBackgroundMusic() {
+            // Create a simple, pleasant background melody using Web Audio API
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(220, audioContext.currentTime); // A3
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            
+            // Create a simple melody pattern
+            const melody = [220, 246.94, 261.63, 293.66, 329.63, 349.23, 392, 440]; // A3 to A4 scale
+            let noteIndex = 0;
+            
+            const playNote = () => {
+                if (isPlaying) {
+                    oscillator.frequency.setValueAtTime(melody[noteIndex], audioContext.currentTime);
+                    noteIndex = (noteIndex + 1) % melody.length;
+                    setTimeout(playNote, 800); // Change note every 800ms
+                }
+            };
+            
+            backgroundMusic = { oscillator, gainNode, playNote };
+        }
+
+        function toggleMusic() {
+            const btn = document.getElementById('musicBtn');
+            
+            if (!audioContext) {
+                initAudio();
+            }
+            
+            if (isPlaying) {
+                // Stop music
+                isPlaying = false;
+                btn.textContent = '🎵';
+                btn.classList.remove('playing');
+                if (backgroundMusic && backgroundMusic.oscillator) {
+                    backgroundMusic.gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+                }
+            } else {
+                // Start music
+                isPlaying = true;
+                btn.textContent = '🎶';
+                btn.classList.add('playing');
+                
+                // Create new oscillator for each play session
+                createBackgroundMusic();
+                backgroundMusic.oscillator.start();
+                backgroundMusic.gainNode.gain.exponentialRampToValueAtTime(0.1, audioContext.currentTime + 0.5);
+                backgroundMusic.playNote();
+            }
+        }
+
+        function playClickSound() {
+            if (audioContext) {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+        }
+
+        function playSuccessSound() {
+            if (audioContext) {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+                oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+                oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+            }
+        }
+
+        // Initialize
+        showPage(1);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9867f26f938a7d67',t:'MTc1OTExMTg1Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
