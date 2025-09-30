@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PGRI Kota Bogor - Persatuan Guru Republik Indonesia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .pgri-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .news-ticker {
+            animation: scroll 30s linear infinite;
+        }
+        
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header dengan Logo PGRI -->
+    <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center space-x-4">
+                    <!-- Logo PGRI -->
+                    <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
+                        <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                            <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill="white"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-blue-600">PGRI KOTA BOGOR</h1>
+                        <p class="text-sm text-gray-600">Persatuan Guru Republik Indonesia</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation Desktop -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#beranda" class="text-gray-700 hover:text-blue-600 font-medium transition duration-300">Beranda</a>
+                    <a href="#profil" class="text-gray-700 hover:text-blue-600 font-medium transition duration-300">Profil</a>
+                    <a href="#program" class="text-gray-700 hover:text-blue-600 font-medium transition duration-300">Program</a>
+                    <a href="#berita" class="text-gray-700 hover:text-blue-600 font-medium transition duration-300">Berita</a>
+                    <a href="#anggota" class="text-gray-700 hover:text-blue-600 font-medium transition duration-300">Keanggotaan</a>
+                    <a href="#kontak" class="text-gray-700 hover:text-blue-600 font-medium transition duration-300">Kontak</a>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t">
+            <div class="px-4 py-2 space-y-2">
+                <a href="#beranda" class="block py-2 text-gray-700">Beranda</a>
+                <a href="#profil" class="block py-2 text-gray-700">Profil</a>
+                <a href="#program" class="block py-2 text-gray-700">Program</a>
+                <a href="#berita" class="block py-2 text-gray-700">Berita</a>
+                <a href="#anggota" class="block py-2 text-gray-700">Keanggotaan</a>
+                <a href="#kontak" class="block py-2 text-gray-700">Kontak</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- News Ticker -->
+    <div class="bg-red-600 text-white py-2 overflow-hidden">
+        <div class="flex items-center">
+            <span class="bg-red-700 px-4 py-1 text-sm font-semibold">PENGUMUMAN</span>
+            <div class="flex-1 relative">
+                <div class="news-ticker whitespace-nowrap text-sm">
+                    📢 Pendaftaran Anggota Baru PGRI Kota Bogor Periode 2024 Telah Dibuka • Workshop Peningkatan Kompetensi Guru 15 Januari 2024 • Rapat Koordinasi Pengurus PGRI Setiap Hari Jumat
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="beranda" class="hero-bg pgri-pattern min-h-screen flex items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+            <div class="fade-in">
+                <h2 class="text-5xl md:text-6xl font-bold mb-6">PGRI KOTA BOGOR</h2>
+                <p class="text-xl md:text-2xl mb-4">Persatuan Guru Republik Indonesia</p>
+                <p class="text-lg mb-8 max-w-3xl mx-auto">
+                    Bersama membangun pendidikan berkualitas untuk generasi emas Indonesia melalui profesionalisme guru dan kesejahteraan pendidik
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="scrollToSection('anggota')" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                        Daftar Anggota 📝
+                    </button>
+                    <button onclick="scrollToSection('program')" class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300">
+                        Lihat Program 📚
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Profil Section -->
+    <section id="profil" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Profil PGRI Kota Bogor</h2>
+                <p class="text-xl text-gray-600">Organisasi profesi guru terbesar di Indonesia</p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Visi & Misi</h3>
+                    
+                    <div class="mb-8">
+                        <h4 class="text-xl font-semibold text-blue-600 mb-3">🎯 Visi</h4>
+                        <p class="text-gray-700 leading-relaxed">
+                            Terwujudnya PGRI sebagai organisasi profesi yang kuat, mandiri, bermartabat, dan sejahtera untuk mewujudkan cita-cita proklamasi kemerdekaan.
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-xl font-semibold text-blue-600 mb-3">🚀 Misi</h4>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start space-x-2">
+                                <span class="text-blue-500 mt-1">•</span>
+                                <span>Memperjuangkan pencerdasan kehidupan bangsa</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <span class="text-blue-500 mt-1">•</span>
+                                <span>Meningkatkan profesionalisme anggota</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <span class="text-blue-500 mt-1">•</span>
+                                <span>Memperjuangkan kesejahteraan anggota</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <span class="text-blue-500 mt-1">•</span>
+                                <span>Melindungi dan membela anggota</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8">
+                    <div class="text-center">
+                        <div class="text-6xl mb-6">🏛️</div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">Data Organisasi</h3>
+                        
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="bg-white rounded-lg p-4">
+                                <div class="text-3xl font-bold text-blue-600">2,847</div>
+                                <div class="text-sm text-gray-600">Anggota Aktif</div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4">
+                                <div class="text-3xl font-bold text-green-600">156</div>
+                                <div class="text-sm text-gray-600">Sekolah Mitra</div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4">
+                                <div class="text-3xl font-bold text-purple-600">24</div>
+                                <div class="text-sm text-gray-600">Program Aktif</div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4">
+                                <div class="text-3xl font-bold text-orange-600">78</div>
+                                <div class="text-sm text-gray-600">Tahun Berdiri</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Program Section -->
+    <section id="program" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Program Unggulan</h2>
+                <p class="text-xl text-gray-600">Berbagai program untuk meningkatkan kualitas pendidikan</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Pelatihan Profesional -->
+                <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="h-48 bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <div class="text-6xl mb-2">📚</div>
+                            <h3 class="text-xl font-semibold">Pelatihan Profesional</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">Workshop dan seminar untuk meningkatkan kompetensi pedagogik, profesional, kepribadian, dan sosial guru.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span class="mr-4">📅 Setiap Bulan</span>
+                            <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded">Aktif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sertifikasi Guru -->
+                <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="h-48 bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <div class="text-6xl mb-2">🏆</div>
+                            <h3 class="text-xl font-semibold">Sertifikasi Guru</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">Pendampingan proses sertifikasi guru dan peningkatan kualifikasi akademik untuk kesejahteraan anggota.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span class="mr-4">📅 Berkelanjutan</span>
+                            <span class="bg-green-100 text-green-600 px-2 py-1 rounded">Prioritas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bantuan Hukum -->
+                <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="h-48 bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <div class="text-6xl mb-2">⚖️</div>
+                            <h3 class="text-xl font-semibold">Bantuan Hukum</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">Layanan konsultasi dan bantuan hukum untuk anggota yang menghadapi permasalahan profesi.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span class="mr-4">📅 24/7</span>
+                            <span class="bg-red-100 text-red-600 px-2 py-1 rounded">Siaga</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kesejahteraan Anggota -->
+                <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="h-48 bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <div class="text-6xl mb-2">💰</div>
+                            <h3 class="text-xl font-semibold">Kesejahteraan</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">Program bantuan sosial, asuransi, dan koperasi untuk meningkatkan kesejahteraan anggota PGRI.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span class="mr-4">📅 Rutin</span>
+                            <span class="bg-purple-100 text-purple-600 px-2 py-1 rounded">Benefit</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kompetisi Guru -->
+                <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="h-48 bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <div class="text-6xl mb-2">🥇</div>
+                            <h3 class="text-xl font-semibold">Kompetisi Guru</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">Lomba guru berprestasi, inovasi pembelajaran, dan karya ilmiah untuk memotivasi kreativitas guru.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span class="mr-4">📅 Tahunan</span>
+                            <span class="bg-orange-100 text-orange-600 px-2 py-1 rounded">Prestasi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Penelitian Pendidikan -->
+                <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="h-48 bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <div class="text-6xl mb-2">🔬</div>
+                            <h3 class="text-xl font-semibold">Penelitian</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">Mendorong dan memfasilitasi penelitian tindakan kelas serta publikasi karya ilmiah guru.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span class="mr-4">📅 Ongoing</span>
+                            <span class="bg-teal-100 text-teal-600 px-2 py-1 rounded">Riset</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Berita Section -->
+    <section id="berita" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Berita Terkini</h2>
+                <p class="text-xl text-gray-600">Informasi terbaru seputar PGRI dan dunia pendidikan</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <article class="card-hover bg-white rounded-xl shadow-lg overflow-hidden border">
+                    <div class="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                        <div class="text-white text-center">
+                            <div class="text-4xl mb-2">📰</div>
+                            <span class="text-sm">15 Januari 2024</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3">Workshop Digital Learning untuk Guru SD</h3>
+                        <p class="text-gray-600 mb-4">PGRI Kota Bogor mengadakan workshop pemanfaatan teknologi digital dalam pembelajaran untuk meningkatkan kualitas pendidikan...</p>
+                        <button class="text-blue-600 font-semibold hover:text-blue-800">Baca Selengkapnya →</button>
+                    </div>
+                </article>
+
+                <article class="card-hover bg-white rounded-xl shadow-lg overflow-hidden border">
+                    <div class="h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                        <div class="text-white text-center">
+                            <div class="text-4xl mb-2">🏆</div>
+                            <span class="text-sm">12 Januari 2024</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3">Guru PGRI Bogor Raih Juara Nasional</h3>
+                        <p class="text-gray-600 mb-4">Ibu Siti Nurhaliza, anggota PGRI Kota Bogor berhasil meraih juara 1 lomba inovasi pembelajaran tingkat nasional...</p>
+                        <button class="text-blue-600 font-semibold hover:text-blue-800">Baca Selengkapnya →</button>
+                    </div>
+                </article>
+
+                <article class="card-hover bg-white rounded-xl shadow-lg overflow-hidden border">
+                    <div class="h-48 bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
+                        <div class="text-white text-center">
+                            <div class="text-4xl mb-2">📋</div>
+                            <span class="text-sm">10 Januari 2024</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3">Rapat Koordinasi Pengurus PGRI</h3>
+                        <p class="text-gray-600 mb-4">Rapat koordinasi bulanan membahas program kerja 2024 dan evaluasi kegiatan tahun sebelumnya untuk kemajuan organisasi...</p>
+                        <button class="text-blue-600 font-semibold hover:text-blue-800">Baca Selengkapnya →</button>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Keanggotaan Section -->
+    <section id="anggota" class="py-20 bg-blue-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Keanggotaan PGRI</h2>
+                <p class="text-xl text-gray-600">Bergabunglah dengan keluarga besar PGRI Kota Bogor</p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Form Pendaftaran -->
+                <div class="bg-white rounded-2xl shadow-xl p-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">📝 Daftar Anggota Baru</h3>
+                    <form id="registration-form" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                                <input type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Masukkan nama lengkap">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">NIP</label>
+                                <input type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Nomor Induk Pegawai">
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Jenjang Pendidikan</label>
+                                <select required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Pilih Jenjang</option>
+                                    <option value="TK">TK/PAUD</option>
+                                    <option value="SD">SD/MI</option>
+                                    <option value="SMP">SMP/MTs</option>
+                                    <option value="SMA">SMA/MA/SMK</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Sekolah</label>
+                                <input type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Nama sekolah tempat mengajar">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="alamat@email.com">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
+                            <input type="tel" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="08xxxxxxxxxx">
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                            Daftar Sekarang 🚀
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Manfaat Keanggotaan -->
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">🎁 Manfaat Keanggotaan</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-lg p-6 shadow-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-blue-100 rounded-full p-2">
+                                    <span class="text-blue-600 text-xl">📚</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-2">Pelatihan & Workshop</h4>
+                                    <p class="text-gray-600">Akses gratis ke berbagai pelatihan profesional dan workshop peningkatan kompetensi.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg p-6 shadow-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-green-100 rounded-full p-2">
+                                    <span class="text-green-600 text-xl">🛡️</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-2">Perlindungan Hukum</h4>
+                                    <p class="text-gray-600">Bantuan konsultasi dan pendampingan hukum untuk masalah profesi.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg p-6 shadow-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-purple-100 rounded-full p-2">
+                                    <span class="text-purple-600 text-xl">💰</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-2">Program Kesejahteraan</h4>
+                                    <p class="text-gray-600">Akses ke program bantuan sosial, asuransi, dan koperasi PGRI.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg p-6 shadow-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-orange-100 rounded-full p-2">
+                                    <span class="text-orange-600 text-xl">🤝</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-2">Jaringan Profesional</h4>
+                                    <p class="text-gray-600">Bergabung dengan komunitas guru profesional se-Indonesia.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kontak Section -->
+    <section id="kontak" class="py-20 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Hubungi Kami</h2>
+                <p class="text-xl text-gray-300">Sekretariat PGRI Kota Bogor siap melayani Anda</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="bg-blue-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">📍</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Alamat Sekretariat</h3>
+                    <p class="text-gray-300">Jl. Kapten Muslihat No. 15<br>Bogor Tengah, Kota Bogor<br>Jawa Barat 16121</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-green-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">📞</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Telepon</h3>
+                    <p class="text-gray-300">(0251) 8324567<br>+62 251 8324567<br>Senin - Jumat: 08:00-16:00</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-purple-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">✉️</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Email</h3>
+                    <p class="text-gray-300">info@pgribogor.org<br>sekretariat@pgribogor.org<br>keanggotaan@pgribogor.org</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-red-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">💬</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">WhatsApp</h3>
+                    <p class="text-gray-300">+62 812-3456-7890<br>Layanan Informasi<br>24 Jam</p>
+                </div>
+            </div>
+            
+            <div class="mt-16 text-center">
+                <div class="flex justify-center space-x-6 mb-8">
+                    <a href="#" class="bg-blue-600 hover:bg-blue-700 rounded-full w-12 h-12 flex items-center justify-center transition duration-300">
+                        <span class="text-xl">📘</span>
+                    </a>
+                    <a href="#" class="bg-pink-600 hover:bg-pink-700 rounded-full w-12 h-12 flex items-center justify-center transition duration-300">
+                        <span class="text-xl">📷</span>
+                    </a>
+                    <a href="#" class="bg-blue-400 hover:bg-blue-500 rounded-full w-12 h-12 flex items-center justify-center transition duration-300">
+                        <span class="text-xl">🐦</span>
+                    </a>
+                    <a href="#" class="bg-red-600 hover:bg-red-700 rounded-full w-12 h-12 flex items-center justify-center transition duration-300">
+                        <span class="text-xl">📺</span>
+                    </a>
+                </div>
+                <p class="text-gray-400 mb-4">&copy; 2024 PGRI Kota Bogor. Semua hak dilindungi undang-undang.</p>
+                <p class="text-sm text-gray-500">"Ing Ngarso Sung Tulodo, Ing Madyo Mangun Karso, Tut Wuri Handayani"</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Smooth scrolling function
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            const offsetTop = element.offsetTop - 80;
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+            });
+        }
+
+        // Navigation links smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                scrollToSection(targetId);
+                
+                // Close mobile menu
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+
+        // Form submission
+        document.getElementById('registration-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simulate form processing
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = 'Memproses... ⏳';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert('✅ Pendaftaran berhasil dikirim!\n\nTerima kasih telah mendaftar sebagai anggota PGRI Kota Bogor. Tim kami akan menghubungi Anda dalam 1-2 hari kerja untuk proses verifikasi.');
+                
+                // Reset form
+                this.reset();
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe cards for animation
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('bg-white/95', 'backdrop-blur-sm');
+            } else {
+                header.classList.remove('bg-white/95', 'backdrop-blur-sm');
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9871931384b9fd28',t:'MTc1OTIxMjgwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
