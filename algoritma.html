@@ -12,22 +12,39 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
+        .fade-in { animation: fadeIn 0.5s ease-in; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* CSS untuk model viewer agar responsif dan ukurannya pas */
+        .pulse-animation { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .route-line {
+            stroke-dasharray: 5,5;
+            animation: dash 2s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -10; }
+        }
+        
+        .node-highlight { animation: highlight 1s ease-in-out; }
+        @keyframes highlight {
+            0%, 100% { fill: #4f46e5; }
+            50% { fill: #818cf8; }
+        }
+
+        /* CSS untuk model viewer */
         model-viewer {
             width: 100%;
             height: 480px;
-            max-width: 720px; /* Menyesuaikan dengan container sebelumnya */
-            border-radius: 0.5rem; /* rounded-lg */
-            background-color: #f3f4f6; /* bg-gray-100 */
+            max-width: 720px;
+            border-radius: 0.5rem;
+            background-color: #f3f4f6;
         }
     </style>
 </head>
@@ -41,14 +58,33 @@
                     <a href="#" id="aboutBtn" class="text-gray-600 hover:text-indigo-600 px-3 py-2">Tentang</a>
                     <a href="#" id="embedBtn" class="text-gray-600 hover:text-indigo-600 px-3 py-2">Embed</a>
                 </nav>
-            </div>
+            }
         </header>
 
         <main class="flex-grow">
             <div id="homePage" class="container mx-auto px-6 py-8">
-                 <div class="text-center">
-                    <h2 class="text-4xl font-extrabold text-gray-800 mb-4">Optimalkan Rute Pengiriman Anda</h2>
-                    <p class="text-lg text-gray-600 mb-8">Gunakan algoritma pencarian canggih untuk menemukan jalur terpendek dan paling efisien.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="md:col-span-1 bg-white p-6 rounded-xl shadow-lg fade-in">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Pengaturan Simulasi</h3>
+                        <div class="mb-4">
+                            <label for="algorithm" class="block text-sm font-medium text-gray-700 mb-2">Pilih Algoritma:</label>
+                            <select id="algorithm" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="bfs">Breadth-First Search (BFS)</option>
+                                <option value="dfs">Depth-First Search (DFS)</option>
+                                <option value="astar">A* (A-Star)</option>
+                            </select>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button id="startBtn" class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300 pulse-animation">Mulai Pencarian</button>
+                            <button id="resetBtn" class="w-full bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300">Reset</button>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 bg-white p-6 rounded-xl shadow-lg fade-in">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Peta Rute Pengiriman</h3>
+                        <div id="graph-container" class="w-full h-96 bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+                            <svg id="graph-svg" class="w-full h-full"></svg>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -67,13 +103,10 @@
                         <div class="bg-white rounded-xl shadow-lg p-6">
                             <div class="flex items-center mb-6">
                                 <div class="bg-red-500 p-3 rounded-lg mr-3">
-                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                                    </svg>
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                                 </div>
                                 <h2 class="text-2xl font-bold text-gray-800">Algoritma Searching Dalam Rute Pengiriman Barang</h2>
                             </div>
-                            
                             <div class="flex items-center justify-center">
                                 <model-viewer src="kotaku/source/model.glb" 
                                               alt="Model 3D sebuah kota" 
@@ -82,7 +115,7 @@
                                               ar
                                               ios-src="kotaku/source/model.glb">
                                 </model-viewer>
-                            </div>                                        
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -95,39 +128,84 @@
             </div>
         </footer>
     </div> <script>
-        // Script untuk navigasi antar halaman (tidak diubah)
         document.addEventListener('DOMContentLoaded', function() {
+            // Skrip navigasi halaman
             const homeBtn = document.getElementById('homeBtn');
             const aboutBtn = document.getElementById('aboutBtn');
             const embedBtn = document.getElementById('embedBtn');
-
             const homePage = document.getElementById('homePage');
             const aboutPage = document.getElementById('aboutPage');
             const embedPage = document.getElementById('embedPage');
-
+            
             function showPage(pageToShow) {
-                [homePage, aboutPage, embedPage].forEach(page => {
-                    page.classList.add('hidden');
-                });
+                [homePage, aboutPage, embedPage].forEach(page => page.classList.add('hidden'));
                 pageToShow.classList.remove('hidden');
             }
 
-            homeBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                showPage(homePage);
-            });
+            homeBtn.addEventListener('click', (e) => { e.preventDefault(); showPage(homePage); });
+            aboutBtn.addEventListener('click', (e) => { e.preventDefault(); showPage(aboutPage); });
+            embedBtn.addEventListener('click', (e) => { e.preventDefault(); showPage(embedPage); });
 
-            aboutBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                showPage(aboutPage);
-            });
+            // Skrip untuk visualisasi graf
+            const svg = document.getElementById('graph-svg');
+            const startBtn = document.getElementById('startBtn');
+            const resetBtn = document.getElementById('resetBtn');
 
-            embedBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                showPage(embedPage);
-            });
+            // Data graf sederhana
+            const nodes = [
+                { id: 'A', x: 100, y: 200 }, { id: 'B', x: 250, y: 100 },
+                { id: 'C', x: 250, y: 300 }, { id: 'D', x: 400, y: 200 },
+                { id: 'E', x: 500, y: 100 }, { id: 'F', x: 500, y: 300 }
+            ];
+            const edges = [
+                { source: 'A', target: 'B' }, { source: 'A', target: 'C' },
+                { source: 'B', target: 'D' }, { source: 'C', target: 'D' },
+                { source: 'D', target: 'E' }, { source: 'D', target: 'F' }
+            ];
+            
+            function drawGraph() {
+                svg.innerHTML = ''; // Hapus graf sebelumnya
+                // Gambar garis (edges)
+                edges.forEach(edge => {
+                    const sourceNode = nodes.find(n => n.id === edge.source);
+                    const targetNode = nodes.find(n => n.id === edge.target);
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', sourceNode.x);
+                    line.setAttribute('y1', sourceNode.y);
+                    line.setAttribute('x2', targetNode.x);
+                    line.setAttribute('y2', targetNode.y);
+                    line.setAttribute('stroke', '#cbd5e1'); // gray-300
+                    line.setAttribute('stroke-width', 2);
+                    svg.appendChild(line);
+                });
+                // Gambar titik (nodes)
+                nodes.forEach(node => {
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('id', `node-${node.id}`);
+                    circle.setAttribute('cx', node.x);
+                    circle.setAttribute('cy', node.y);
+                    circle.setAttribute('r', 15);
+                    circle.setAttribute('fill', '#6366f1'); // indigo-500
+                    circle.setAttribute('stroke', '#ffffff');
+                    circle.setAttribute('stroke-width', 3);
+                    svg.appendChild(circle);
 
-            // Tampilkan halaman Beranda saat pertama kali dibuka
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', node.x);
+                    text.setAttribute('y', node.y + 5);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('fill', 'white');
+                    text.setAttribute('font-size', '12px');
+                    text.textContent = node.id;
+                    svg.appendChild(text);
+                });
+            }
+
+            resetBtn.addEventListener('click', drawGraph);
+            startBtn.addEventListener('click', () => alert('Fungsi simulasi belum diimplementasikan.'));
+
+            // Inisialisasi
+            drawGraph();
             showPage(homePage);
         });
     </script>
