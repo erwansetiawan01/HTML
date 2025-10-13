@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritma Searching - Rute Pengiriman Barang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* CSS untuk model viewer agar responsif dan ukurannya pas */
+        model-viewer {
+            width: 100%;
+            height: 480px;
+            max-width: 720px; /* Menyesuaikan dengan container sebelumnya */
+            border-radius: 0.5rem; /* rounded-lg */
+            background-color: #f3f4f6; /* bg-gray-100 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="app" class="min-h-screen flex flex-col">
+        <header class="bg-white shadow-md">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-indigo-600">Pencarian Rute Pengiriman</h1>
+                <nav>
+                    <a href="#" id="homeBtn" class="text-gray-600 hover:text-indigo-600 px-3 py-2">Beranda</a>
+                    <a href="#" id="aboutBtn" class="text-gray-600 hover:text-indigo-600 px-3 py-2">Tentang</a>
+                    <a href="#" id="embedBtn" class="text-gray-600 hover:text-indigo-600 px-3 py-2">Embed</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="flex-grow">
+            <div id="homePage" class="container mx-auto px-6 py-8">
+                 <div class="text-center">
+                    <h2 class="text-4xl font-extrabold text-gray-800 mb-4">Optimalkan Rute Pengiriman Anda</h2>
+                    <p class="text-lg text-gray-600 mb-8">Gunakan algoritma pencarian canggih untuk menemukan jalur terpendek dan paling efisien.</p>
+                </div>
+            </div>
+
+            <div id="aboutPage" class="container mx-auto px-6 py-8 hidden">
+                <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 pb-2 border-indigo-200">Tentang Proyek Ini</h2>
+                    <p class="text-gray-700 leading-relaxed">
+                        Proyek ini mendemonstrasikan penerapan berbagai algoritma pencarian untuk menyelesaikan masalah umum dalam logistik: menemukan rute pengiriman yang optimal. Kami memvisualisasikan bagaimana algoritma seperti Breadth-First Search (BFS), Depth-First Search (DFS), dan A* (A-Star) menjelajahi kemungkinan jalur untuk menghubungkan titik awal dan akhir secara efisien.
+                    </p>
+                </div>
+            </div>
+
+            <div id="embedPage" class="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 hidden">
+                <div class="container mx-auto px-6 py-8">
+                    <div class="max-w-4xl mx-auto mb-8">
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center mb-6">
+                                <div class="bg-red-500 p-3 rounded-lg mr-3">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                    </svg>
+                                </div>
+                                <h2 class="text-2xl font-bold text-gray-800">Algoritma Searching Dalam Rute Pengiriman Barang</h2>
+                            </div>
+                            
+                            <div class="flex items-center justify-center">
+                                <model-viewer src="kotaku/source/model.glb" 
+                                              alt="Model 3D sebuah kota" 
+                                              auto-rotate 
+                                              camera-controls
+                                              ar
+                                              ios-src="kotaku/source/model.glb">
+                                </model-viewer>
+                            </div>                                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="bg-white">
+            <div class="container mx-auto px-6 py-4">
+                <p class="text-center text-gray-500 text-sm">© 2024 Proyek Visualisasi Algoritma. Dibuat dengan ❤️</p>
+            </div>
+        </footer>
+    </div> <script>
+        // Script untuk navigasi antar halaman (tidak diubah)
+        document.addEventListener('DOMContentLoaded', function() {
+            const homeBtn = document.getElementById('homeBtn');
+            const aboutBtn = document.getElementById('aboutBtn');
+            const embedBtn = document.getElementById('embedBtn');
+
+            const homePage = document.getElementById('homePage');
+            const aboutPage = document.getElementById('aboutPage');
+            const embedPage = document.getElementById('embedPage');
+
+            function showPage(pageToShow) {
+                [homePage, aboutPage, embedPage].forEach(page => {
+                    page.classList.add('hidden');
+                });
+                pageToShow.classList.remove('hidden');
+            }
+
+            homeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(homePage);
+            });
+
+            aboutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(aboutPage);
+            });
+
+            embedBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(embedPage);
+            });
+
+            // Tampilkan halaman Beranda saat pertama kali dibuka
+            showPage(homePage);
+        });
+    </script>
+</body>
+</html>
