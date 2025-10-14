@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritma Searching - Rute Pengiriman Barang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .route-line {
+            stroke-dasharray: 5,5;
+            animation: dash 2s linear infinite;
+        }
+        
+        @keyframes dash {
+            to { stroke-dashoffset: -10; }
+        }
+        
+        .node-highlight {
+            animation: highlight 1s ease-in-out;
+        }
+        
+        @keyframes highlight {
+            0%, 100% { fill: #3B82F6; }
+            50% { fill: #EF4444; }
+        }
+
+        .race-track {
+            background: linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+            border: 2px solid #0ea5e9;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .algorithm-runner {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: left 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .bfs-runner {
+            background: linear-gradient(45deg, #10b981, #059669);
+            top: 25%;
+        }
+
+        .dfs-runner {
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+            top: 65%;
+        }
+
+        .finish-line {
+            position: absolute;
+            right: 10px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: repeating-linear-gradient(
+                0deg,
+                #000 0px,
+                #000 10px,
+                #fff 10px,
+                #fff 20px
+            );
+        }
+
+        .race-progress {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+		.gif-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .gif-container img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        .bfs-progress { background: #10b981; }
+        .dfs-progress { background: #8b5cf6; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div id="gifPage" class="gif-container">
+        <img src="bumper1.gif" alt="Animasi Pembuka">
+    </div>
+
+    <div id="embedPage" class="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 hidden">
+        <div class="container mx-auto px-6 py-8">
+            <div class="max-w-4xl mx-auto mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-red-500 p-3 rounded-lg mr-3">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800">Algoritma Searching Dalam Rute Pengiriman Barang</h2>
+                    </div>
+                    
+                    <div class="bg-gray-100 rounded-lg mb-6 aspect-video flex items-center justify-center">
+                        <model-viewer src="model.glb" alt="A 3D model of a city" ar camera-controls auto-rotate style="width: 100%; height: 480px; background-color: transparent;"></model-viewer>
+                    </div>                                        
+                </div>
+            </div>
+
+            <div class="text-center">
+                <div class="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto">
+                    <p class="text-gray-600 mb-6">Lanjutkan menuju pembelajaran algoritma searching</p>
+                    <div class="flex justify-center space-x-4">
+                        <button onclick="enterApp()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-lg transition duration-200 shadow-lg hover:shadow-xl text-lg">
+                            Lanjut ke Pembelajaran
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainApp" class="hidden">
+    
+    <header class="bg-white shadow-lg border-b-4 border-blue-500">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-blue-500 p-3 rounded-lg">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Algoritma Searching</h1>
+                        <p class="text-gray-600">Pencarian Rute Pengiriman Barang</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="goToPracticeApp()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition duration-200 flex items-center space-x-2">
+                        <span>Aplikasi Latihan</span>
+                    </button>
+                    <button onclick="goTolandingPageApp()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold transition duration-200 flex items-center space-x-2">
+                        <span>Beranda</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="bg-white shadow-sm border-b">
+        <div class="container mx-auto px-6">
+            <div class="flex space-x-8">
+                <button onclick="showSection('teori')" class="nav-btn py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-semibold">
+                    📚 Teori
+                </button>
+                <button onclick="showSection('simulasi')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                    🎮 Simulasi
+                </button>
+                <button onclick="showSection('latihan')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                    ✏️ Latihan
+                </button>
+                <button onclick="showSection('evaluasi')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                    📊 Evaluasi
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-8">
+        <section id="teori" class="section-content">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-blue-500 text-white p-2 rounded-lg mr-3">📚</span>
+                    Pengantar Algoritma Searching
+                </h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-4">Apa itu Algoritma Searching?</h3>
+                        <p class="text-gray-600 mb-4 leading-relaxed">
+                            Algoritma searching adalah metode untuk mencari data atau informasi tertentu dalam kumpulan data. 
+                            Dalam konteks pengiriman barang, algoritma ini membantu mencari rute terbaik dari titik asal ke tujuan.
+                        </p>
+                        <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-blue-800 mb-2">Tujuan Pembelajaran:</h4>
+                            <ul class="text-blue-700 space-y-1">
+                                <li>• Memahami konsep algoritma searching</li>
+                                <li>• Menerapkan BFS dan DFS untuk rute pengiriman</li>
+                                <li>• Menganalisis efisiensi algoritma</li>
+                                <li>• Memecahkan masalah rute optimal</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-lg">
+                        <h4 class="font-semibold text-gray-700 mb-4">Contoh Kasus Nyata:</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3"><span class="text-2xl">🚚</span><span class="text-gray-600">Pengiriman paket e-commerce</span></div>
+                            <div class="flex items-center space-x-3"><span class="text-2xl">🍕</span><span class="text-gray-600">Delivery makanan</span></div>
+                            <div class="flex items-center space-x-3"><span class="text-2xl">🚑</span><span class="text-gray-600">Ambulans darurat</span></div>
+                            <div class="flex items-center space-x-3"><span class="text-2xl">📦</span><span class="text-gray-600">Logistik gudang</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-500 p-3 rounded-lg mr-3"><svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></div>
+                        <h3 class="text-xl font-bold text-gray-800">Breadth-First Search (BFS)</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">BFS menjelajahi semua node pada level yang sama sebelum pindah ke level berikutnya. Cocok untuk mencari rute terpendek dalam graf tidak berbobot.</p>
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-green-800 mb-2">Keunggulan:</h4>
+                        <ul class="text-green-700 text-sm space-y-1">
+                            <li>• Menjamin solusi optimal untuk graf tidak berbobot</li>
+                            <li>• Cocok untuk pencarian rute terpendek</li>
+                            <li>• Mudah diimplementasi</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-purple-500 p-3 rounded-lg mr-3"><svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg></div>
+                        <h3 class="text-xl font-bold text-gray-800">Depth-First Search (DFS)</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">DFS menjelajahi sejauh mungkin pada satu cabang sebelum backtrack. Efisien untuk mencari semua kemungkinan rute atau deteksi siklus.</p>
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-800 mb-2">Keunggulan:</h4>
+                        <ul class="text-purple-700 text-sm space-y-1">
+                            <li>• Menggunakan memori lebih sedikit</li>
+                            <li>• Cocok untuk pencarian jalur alternatif</li>
+                            <li>• Dapat mendeteksi siklus dalam graf</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="simulasi" class="section-content hidden">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center"><span class="bg-green-500 text-white p-2 rounded-lg mr-3">🎮</span>Simulasi Pencarian Rute</h2>
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-1">
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h3 class="font-semibold text-gray-700 mb-4">Panel Kontrol</h3>
+                            <div class="space-y-4">
+                                <div><label class="block text-sm font-medium text-gray-600 mb-2">Titik Asal:</label><select id="startNode" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"><option value="A">Gudang A</option><option value="B">Gudang B</option><option value="C">Gudang C</option><option value="D">Gudang D</option></select></div>
+                                <div><label class="block text-sm font-medium text-gray-600 mb-2">Tujuan:</label><select id="endNode" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"><option value="E">Toko E</option><option value="F">Toko F</option><option value="G">Toko G</option><option value="H">Toko H</option></select></div>
+                                <div><label class="block text-sm font-medium text-gray-600 mb-2">Algoritma:</label><select id="algorithm" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"><option value="bfs">Breadth-First Search</option><option value="dfs">Depth-First Search</option></select></div>
+                                <button onclick="startSearch()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">🚀 Mulai Pencarian</button>
+                                <button onclick="resetSimulation()" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">🔄 Reset</button>
+                            </div>
+                            <div id="statusPanel" class="mt-6 p-4 bg-blue-50 rounded-lg hidden">
+                                <h4 class="font-semibold text-blue-800 mb-2">Status Pencarian:</h4>
+                                <div id="searchStatus" class="text-blue-700 text-sm"></div>
+                                <div id="pathResult" class="mt-2 text-blue-700 text-sm font-medium"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h3 class="font-semibold text-gray-700 mb-4">Peta Rute Pengiriman</h3>
+                            <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
+                                <svg id="graphSvg" width="100%" height="400" viewBox="0 0 600 400">
+                                    <circle id="nodeA" cx="100" cy="100" r="25" fill="#3B82F6" stroke="#1E40AF" stroke-width="3"/><text x="100" y="105" text-anchor="middle" fill="white" font-weight="bold">A</text><text x="100" y="140" text-anchor="middle" fill="#374151" font-size="12">Gudang A</text>
+                                    <circle id="nodeB" cx="300" cy="80" r="25" fill="#3B82F6" stroke="#1E40AF" stroke-width="3"/><text x="300" y="85" text-anchor="middle" fill="white" font-weight="bold">B</text><text x="300" y="120" text-anchor="middle" fill="#374151" font-size="12">Gudang B</text>
+                                    <circle id="nodeC" cx="150" cy="200" r="25" fill="#3B82F6" stroke="#1E40AF" stroke-width="3"/><text x="150" y="205" text-anchor="middle" fill="white" font-weight="bold">C</text><text x="150" y="240" text-anchor="middle" fill="#374151" font-size="12">Gudang C</text>
+                                    <circle id="nodeD" cx="350" cy="180" r="25" fill="#3B82F6" stroke="#1E40AF" stroke-width="3"/><text x="350" y="185" text-anchor="middle" fill="white" font-weight="bold">D</text><text x="350" y="220" text-anchor="middle" fill="#374151" font-size="12">Gudang D</text>
+                                    <circle id="nodeE" cx="500" cy="120" r="25" fill="#10B981" stroke="#059669" stroke-width="3"/><text x="500" y="125" text-anchor="middle" fill="white" font-weight="bold">E</text><text x="500" y="160" text-anchor="middle" fill="#374151" font-size="12">Toko E</text>
+                                    <circle id="nodeF" cx="450" cy="250" r="25" fill="#10B981" stroke="#059669" stroke-width="3"/><text x="450" y="255" text-anchor="middle" fill="white" font-weight="bold">F</text><text x="450" y="290" text-anchor="middle" fill="#374151" font-size="12">Toko F</text>
+                                    <circle id="nodeG" cx="250" cy="300" r="25" fill="#10B981" stroke="#059669" stroke-width="3"/><text x="250" y="305" text-anchor="middle" fill="white" font-weight="bold">G</text><text x="250" y="340" text-anchor="middle" fill="#374151" font-size="12">Toko G</text>
+                                    <circle id="nodeH" cx="100" cy="320" r="25" fill="#10B981" stroke="#059669" stroke-width="3"/><text x="100" y="325" text-anchor="middle" fill="white" font-weight="bold">H</text><text x="100" y="360" text-anchor="middle" fill="#374151" font-size="12">Toko H</text>
+                                    <line x1="125" y1="100" x2="275" y2="80" stroke="#6B7280" stroke-width="2"/><line x1="125" y1="115" x2="125" y2="175" stroke="#6B7280" stroke-width="2"/><line x1="300" y1="105" x2="350" y2="155" stroke="#6B7280" stroke-width="2"/><line x1="325" y1="80" x2="475" y2="120" stroke="#6B7280" stroke-width="2"/><line x1="175" y1="200" x2="325" y2="180" stroke="#6B7280" stroke-width="2"/><line x1="375" y1="180" x2="425" y2="250" stroke="#6B7280" stroke-width="2"/><line x1="175" y1="215" x2="225" y2="285" stroke="#6B7280" stroke-width="2"/><line x1="125" y1="215" x2="125" y2="295" stroke="#6B7280" stroke-width="2"/><line x1="275" y1="300" x2="425" y2="250" stroke="#6B7280" stroke-width="2"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="latihan" class="section-content hidden">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center"><span class="bg-orange-500 text-white p-2 rounded-lg mr-3">🎮</span>Game: Route Master Challenge</h2>
+                <div id="gameSelection" class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border-2 border-blue-200 hover:border-blue-400 cursor-pointer transition duration-200" onclick="playSound('click'); startGame('algorace')"><div class="text-center"><div class="text-4xl mb-3">🏁</div><h3 class="text-lg font-bold text-blue-800 mb-2">Algorithm Race</h3><p class="text-blue-600 text-sm">Balapan algoritma BFS vs DFS secara real-time</p><div class="mt-3 bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-semibold">Level: Mudah</div></div></div>
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border-2 border-green-200 hover:border-green-400 cursor-pointer transition duration-200" onclick="playSound('click'); startGame('speedrace')"><div class="text-center"><div class="text-4xl mb-3">⚡</div><h3 class="text-lg font-bold text-green-800 mb-2">Speed Race</h3><p class="text-green-600 text-sm">Lomba kecepatan algoritma searching</p><div class="mt-3 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold">Level: Sedang</div></div></div>
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border-2 border-purple-200 hover:border-purple-400 cursor-pointer transition duration-200" onclick="playSound('click'); startGame('puzzle')"><div class="text-center"><div class="text-4xl mb-3">🧩</div><h3 class="text-lg font-bold text-purple-800 mb-2">Algorithm Puzzle</h3><p class="text-purple-600 text-sm">Susun langkah algoritma yang benar</p><div class="mt-3 bg-purple-500 text-white px-4 py-2 rounded-full text-sm font-semibold">Level: Sulit</div></div></div>
+                </div>
+                <div id="gameArea" class="hidden">
+                    <div id="algoraceGame" class="game-content hidden"><div class="bg-blue-50 p-6 rounded-lg mb-6"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-blue-800">🏁 Algorithm Race Challenge</h3><div class="flex items-center space-x-4"><span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Round: <span id="raceRound">1</span>/5</span><span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Skor: <span id="raceScore">0</span></span></div></div><p class="text-blue-700 mb-2">Tebak algoritma mana yang akan sampai tujuan lebih dulu! Amati pola pencarian mereka.</p><div class="bg-blue-100 p-3 rounded-lg mb-4"><h5 class="font-semibold text-blue-800 mb-2">💡 Tips Analisis:</h5><ul class="text-blue-700 text-sm space-y-1"><li>• <strong>BFS:</strong> Cari level berapa target ditemukan</li><li>• <strong>DFS:</strong> Hitung total langkah hingga target</li><li>• <strong>Bandingkan:</strong> Algoritma dengan langkah lebih sedikit menang!</li></ul></div><div class="bg-white p-6 rounded-lg border mb-4"><div class="flex justify-between items-center mb-4"><h4 class="font-semibold text-gray-700">Rute: <span id="raceRoute" class="text-blue-600">A → E</span></h4><div class="text-sm text-gray-600"><span class="inline-block w-3 h-3 bg-green-500 rounded-full mr-1"></span> BFS<span class="inline-block w-3 h-3 bg-purple-500 rounded-full mr-1 ml-3"></span> DFS</div></div><div class="grid md:grid-cols-2 gap-4 mb-4"><div class="bg-green-50 p-4 rounded-lg border border-green-200"><h5 class="font-semibold text-green-800 mb-2">🟢 Pola BFS (Level by Level)</h5><div id="bfsPattern" class="text-sm text-green-700"></div><div class="mt-2 text-xs text-green-600">Jarak: <span id="bfsDistance" class="font-bold">-</span> langkah</div></div><div class="bg-purple-50 p-4 rounded-lg border border-purple-200"><h5 class="font-semibold text-purple-800 mb-2">🟣 Pola DFS (Depth First)</h5><div id="dfsPattern" class="text-sm text-purple-700"></div><div class="mt-2 text-xs text-purple-600">Jarak: <span id="dfsDistance" class="font-bold">-</span> langkah</div></div></div><div class="race-track h-24 mb-4 relative"><div class="finish-line"></div><div class="algorithm-runner bfs-runner" id="bfsRunner">BFS</div><div class="algorithm-runner dfs-runner" id="dfsRunner">DFS</div></div><div class="space-y-2 mb-4"><div class="flex items-center"><span class="w-12 text-sm font-semibold text-green-600">BFS:</span><div class="flex-1 race-progress"><div class="progress-bar bfs-progress" id="bfsProgress" style="width: 0%"></div></div><span class="w-12 text-right text-sm" id="bfsSteps">0</span></div><div class="flex items-center"><span class="w-12 text-sm font-semibold text-purple-600">DFS:</span><div class="flex-1 race-progress"><div class="progress-bar dfs-progress" id="dfsProgress" style="width: 0%"></div></div><span class="w-12 text-right text-sm" id="dfsSteps">0</span></div></div><div id="predictionButtons" class="flex justify-center space-x-4"><button onclick="makePrediction('bfs')" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-200">🟢 BFS Menang</button><button onclick="makePrediction('dfs')" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-200">🟣 DFS Menang</button><button onclick="makePrediction('tie')" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-200">⚪ Seri</button></div><div class="text-center mt-4"><button onclick="startRace()" id="startRaceBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold text-lg">🚀 Mulai Balapan!</button></div></div><div id="raceResult" class="hidden mt-4 p-4 rounded-lg"></div></div></div>
+                    <div id="speedraceGame" class="game-content hidden"><div class="bg-green-50 p-6 rounded-lg mb-6"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-green-800">⚡ Speed Race Challenge</h3><div class="flex items-center space-x-4"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Waktu: <span id="speedraceTimer">30</span>s</span><span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Skor: <span id="speedraceScore">0</span></span></div></div><p class="text-green-700 mb-4">Pilih algoritma yang paling cocok untuk setiap skenario secepat mungkin!</p><div id="speedraceQuestion" class="bg-white p-6 rounded-lg border-2 border-green-200"></div><div class="mt-4 text-center"><button onclick="startSpeedRace()" id="speedraceStartBtn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold text-lg">🚀 Mulai Race!</button></div></div></div>
+                    <div id="puzzleGame" class="game-content hidden"><div class="bg-purple-50 p-6 rounded-lg mb-6"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-purple-800">🧩 Algorithm Puzzle</h3><div class="flex items-center space-x-4"><span class="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Langkah: <span id="puzzleMoves">0</span></span><span class="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Target: <span id="puzzleTarget">5</span></span></div></div><p class="text-purple-700 mb-4">Susun langkah-langkah algoritma BFS dalam urutan yang benar!</p><div class="grid lg:grid-cols-2 gap-6"><div class="bg-white p-4 rounded-lg border"><h4 class="font-semibold text-gray-700 mb-3">Langkah-langkah Tersedia:</h4><div id="puzzleSteps" class="space-y-2"></div></div><div class="bg-white p-4 rounded-lg border"><h4 class="font-semibold text-gray-700 mb-3">Urutan Algoritma BFS:</h4><div id="puzzleSolution" class="space-y-2 min-h-[200px] border-2 border-dashed border-purple-300 p-3 rounded"><div class="text-gray-500 text-center">Seret langkah ke sini...</div></div></div></div><div class="mt-4 flex justify-between"><button onclick="resetPuzzle()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold">🔄 Reset</button><button onclick="checkPuzzleAnswer()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold">✓ Cek Urutan</button></div></div><div id="puzzleResult" class="hidden mt-4 p-4 rounded-lg"></div></div>
+                    <div class="text-center mt-6"><button onclick="backToGameSelection()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold">← Kembali ke Menu Game</button></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="evaluasi" class="section-content hidden">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center"><span class="bg-red-500 text-white p-2 rounded-lg mr-3">📊</span>Evaluasi Pemahaman</h2>
+                <div id="quizArea">
+                    <div id="quizIntro" class="text-center"><p class="text-gray-600 mb-6">Uji pemahaman Anda tentang algoritma searching dengan kuis singkat ini. <br>Ada 5 pertanyaan pilihan ganda yang harus diselesaikan.</p><button onclick="startQuiz()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-200">Mulai Kuis</button></div>
+                    <div id="quizContent" class="hidden"><div class="flex justify-between items-center mb-4"><div class="text-sm font-semibold text-gray-600">Pertanyaan <span id="questionNumber">1</span> dari 5</div><div class="text-sm font-semibold text-red-600">Sisa Waktu: <span id="quizTimer">60</span> detik</div></div><div class="bg-gray-100 p-6 rounded-lg mb-4"><h3 id="questionText" class="text-lg font-semibold text-gray-800"></h3></div><div id="answerOptions" class="space-y-3"></div><div class="mt-6 flex justify-between items-center"><button onclick="nextQuestion()" id="nextQuestionBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition duration-200">Lanjut →</button></div></div>
+                    <div id="quizResult" class="hidden text-center"><h3 class="text-2xl font-bold text-gray-800 mb-4">Hasil Kuis Anda</h3><div class="bg-blue-50 p-6 rounded-lg inline-block"><div class="text-4xl font-bold text-blue-600 mb-2" id="finalScore"></div><div class="text-gray-600" id="scoreFeedback"></div></div><div class="mt-6"><button onclick="restartQuiz()" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition duration-200">Ulangi Kuis</button></div></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Graph data
+        const graph = {
+            A: { x: 100, y: 100, neighbors: ['B', 'C'] }, B: { x: 300, y:  80, neighbors: ['A', 'D', 'E'] }, C: { x: 150, y: 200, neighbors: ['A', 'D', 'G', 'H'] }, D: { x: 350, y: 180, neighbors: ['B', 'C', 'F'] }, E: { x: 500, y: 120, neighbors: ['B'] }, F: { x: 450, y: 250, neighbors: ['D', 'G'] }, G: { x: 250, y: 300, neighbors: ['C', 'F'] }, H: { x: 100, y: 320, neighbors: ['C'] }
+        };
+
+        // Navigation
+        const sections = document.querySelectorAll('.section-content');
+        const navButtons = document.querySelectorAll('.nav-btn');
+
+        function showSection(sectionId) {
+            sections.forEach(section => {
+                section.id === sectionId ? (section.classList.remove('hidden'), section.classList.add('fade-in')) : section.classList.add('hidden');
+            });
+            navButtons.forEach(btn => {
+                btn.textContent.toLowerCase().includes(sectionId) ? (btn.classList.add('border-blue-500', 'text-blue-600'), btn.classList.remove('border-transparent', 'text-gray-500')) : (btn.classList.remove('border-blue-500', 'text-blue-600'), btn.classList.add('border-transparent', 'text-gray-500'));
+            });
+            playSound('nav_click');
+        }
+
+        // Simulation
+        const svg = document.getElementById('graphSvg');
+        const statusPanel = document.getElementById('statusPanel');
+        const searchStatus = document.getElementById('searchStatus');
+        const pathResult = document.getElementById('pathResult');
+        let searchInterval;
+
+        function startSearch() {
+            resetSimulation();
+            const start = document.getElementById('startNode').value;
+            const end = document.getElementById('endNode').value;
+            const algorithm = document.getElementById('algorithm').value;
+
+            if (start === end) return alert("Titik asal dan tujuan tidak boleh sama.");
+
+            statusPanel.classList.remove('hidden');
+            searchStatus.textContent = `Mencari rute dari ${start} ke ${end} menggunakan ${algorithm.toUpperCase()}...`;
+            
+            let path = algorithm === 'bfs' ? bfs(start, end) : dfs(start, end);
+            animateSearch(path, end);
+            playSound('start_search');
+        }
+
+        function animateSearch(path, end) {
+            let i = 0;
+            searchInterval = setInterval(() => {
+                if (i < path.length) {
+                    highlightNode(path[i], 'visited');
+                    searchStatus.textContent = `Mengunjungi node: ${path[i]}`;
+                    playSound('node_visit');
+                    i++;
+                } else {
+                    clearInterval(searchInterval);
+                    if (path[path.length - 1] === end) {
+                        highlightPath(path);
+                        searchStatus.textContent = "Rute ditemukan!";
+                        pathResult.textContent = `Rute: ${path.join(' → ')}`;
+                        playSound('success');
+                    } else {
+                        searchStatus.textContent = "Rute tidak ditemukan.";
+                        playSound('failure');
+                    }
+                }
+            }, 500);
+        }
+
+        function highlightNode(nodeId, type) {
+            const circle = document.getElementById(`node${nodeId}`);
+            if (type === 'visited') circle.style.fill = '#F59E0B'; // Amber
+            else if (type === 'path') circle.style.fill = '#10B981'; // Green
+        }
+
+        function highlightPath(path) {
+            for (let i = 0; i < path.length - 1; i++) {
+                const startNode = graph[path[i]], endNode = graph[path[i+1]];
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', startNode.x); line.setAttribute('y1', startNode.y); line.setAttribute('x2', endNode.x); line.setAttribute('y2', endNode.y); line.setAttribute('stroke', '#EF4444'); line.setAttribute('stroke-width', '4'); line.classList.add('route-line');
+                svg.appendChild(line);
+            }
+        }
+        
+        function resetSimulation() {
+            clearInterval(searchInterval);
+            Object.keys(graph).forEach(nodeId => {
+                const circle = document.getElementById(`node${nodeId}`);
+                circle.style.fill = ['A', 'B', 'C', 'D'].includes(nodeId) ? '#3B82F6' : '#10B981';
+            });
+            svg.querySelectorAll('.route-line').forEach(line => line.remove());
+            statusPanel.classList.add('hidden');
+            searchStatus.textContent = ""; pathResult.textContent = "";
+        }
+
+        function bfs(start, end) {
+            const queue = [[start]], visited = new Set();
+            while (queue.length > 0) {
+                const path = queue.shift(), node = path[path.length - 1];
+                if (!visited.has(node)) {
+                    visited.add(node);
+                    if (node === end) return path;
+                    for (const neighbor of graph[node].neighbors) queue.push([...path, neighbor]);
+                }
+            }
+            return Array.from(visited);
+        }
+
+        function dfs(start, end) {
+            const stack = [[start]], visited = new Set();
+            while (stack.length > 0) {
+                const path = stack.pop(), node = path[path.length - 1];
+                if (!visited.has(node)) {
+                    visited.add(node);
+                    if (node === end) return path;
+                    for (let i = graph[node].neighbors.length - 1; i >= 0; i--) stack.push([...path, graph[node].neighbors[i]]);
+                }
+            }
+            return Array.from(visited);
+        }
+        
+        // Audio
+        const sounds = {
+            click: new Audio('https://www.soundjay.com/buttons/sounds/button-16.mp3'), nav_click: new Audio('https://www.soundjay.com/buttons/sounds/button-20.mp3'), start_search: new Audio('https://www.soundjay.com/buttons/sounds/button-7.mp3'), node_visit: new Audio('https://www.soundjay.com/buttons/sounds/button-4.mp3'), success: new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3'), failure: new Audio('https://www.soundjay.com/buttons/sounds/button-10.mp3'), correct: new Audio('https://www.soundjay.com/buttons/sounds/button-37.mp3'), wrong: new Audio('https://www.soundjay.com/buttons/sounds/button-30.mp3')
+        };
+        
+        function playSound(sound) { sounds[sound].currentTime = 0; sounds[sound].play(); }
+
+        // Latihan / Game
+        const gameArea = document.getElementById('gameArea');
+        const gameSelection = document.getElementById('gameSelection');
+        const gameContents = document.querySelectorAll('.game-content');
+
+        function startGame(gameType) {
+            gameSelection.classList.add('hidden');
+            gameArea.classList.remove('hidden');
+            gameContents.forEach(game => game.id === `${gameType}Game` ? game.classList.remove('hidden') : game.classList.add('hidden'));
+            if (gameType === 'algorace') initAlgoRace();
+            if (gameType === 'speedrace') initSpeedRace();
+            if (gameType === 'puzzle') initPuzzle();
+        }
+
+        function backToGameSelection() {
+            gameArea.classList.add('hidden');
+            gameSelection.classList.remove('hidden');
+        }
+
+        // Algorithm Race Game
+        let raceRound = 1, raceScore = 0, raceStart, raceEnd, racePrediction, raceInterval, bfsSteps, dfsSteps;
+        function initAlgoRace() { raceRound = 1; raceScore = 0; setupNewRaceRound(); document.getElementById('raceScore').textContent = raceScore; }
+        function setupNewRaceRound() {
+            if (raceRound > 5) { alert(`Game Selesai! Skor akhirmu: ${raceScore}`); return backToGameSelection(); }
+            document.getElementById('raceRound').textContent = `${raceRound}/5`;
+            const nodes = Object.keys(graph);
+            raceStart = nodes[Math.floor(Math.random() * 4)];
+            raceEnd = nodes[Math.floor(Math.random() * 4) + 4];
+            document.getElementById('raceRoute').textContent = `${raceStart} → ${raceEnd}`;
+            const bfsPath = bfs(raceStart, raceEnd), dfsPath = dfs(raceStart, raceEnd);
+            document.getElementById('bfsPattern').textContent = bfsPath.join(' → '); document.getElementById('dfsPattern').textContent = dfsPath.join(' → ');
+            document.getElementById('bfsDistance').textContent = `${bfsPath.length - 1}`; document.getElementById('dfsDistance').textContent = `${dfsPath.length - 1}`;
+            resetRaceAnimation();
+        }
+        function resetRaceAnimation() {
+            clearInterval(raceInterval);
+            document.getElementById('bfsRunner').style.left = '0%'; document.getElementById('dfsRunner').style.left = '0%';
+            document.getElementById('bfsProgress').style.width = '0%'; document.getElementById('dfsProgress').style.width = '0%';
+            document.getElementById('bfsSteps').textContent = 0; document.getElementById('dfsSteps').textContent = 0;
+            document.getElementById('predictionButtons').classList.remove('hidden');
+            document.getElementById('raceResult').classList.add('hidden');
+            document.getElementById('startRaceBtn').disabled = true;
+        }
+        function makePrediction(algo) { racePrediction = algo; document.getElementById('startRaceBtn').disabled = false; }
+        function startRace() {
+            playSound('start_search');
+            document.getElementById('predictionButtons').classList.add('hidden');
+            const bfsPath = bfs(raceStart, raceEnd), dfsPath = dfs(raceStart, raceEnd);
+            bfsSteps = 0; dfsSteps = 0;
+            const bfsTotal = bfsPath.length - 1, dfsTotal = dfsPath.length - 1;
+            raceInterval = setInterval(() => {
+                let bfsFinished = false, dfsFinished = false;
+                if (bfsSteps < bfsTotal) { bfsSteps++; document.getElementById('bfsRunner').style.left = `${(bfsSteps / bfsTotal) * 90}%`; document.getElementById('bfsProgress').style.width = `${(bfsSteps / bfsTotal) * 100}%`; document.getElementById('bfsSteps').textContent = bfsSteps; } else { bfsFinished = true; }
+                if (dfsSteps < dfsTotal) { dfsSteps++; document.getElementById('dfsRunner').style.left = `${(dfsSteps / dfsTotal) * 90}%`; document.getElementById('dfsProgress').style.width = `${(dfsSteps / dfsTotal) * 100}%`; document.getElementById('dfsSteps').textContent = dfsSteps; } else { dfsFinished = true; }
+                if (bfsFinished && dfsFinished) { clearInterval(raceInterval); evaluateRaceResult(bfsTotal, dfsTotal); }
+            }, 300);
+        }
+        function evaluateRaceResult(bfsTotal, dfsTotal) {
+            let winner = bfsTotal < dfsTotal ? 'bfs' : (dfsTotal < bfsTotal ? 'dfs' : 'tie');
+            const resultDiv = document.getElementById('raceResult');
+            resultDiv.classList.remove('hidden');
+            if (racePrediction === winner) {
+                resultDiv.className = 'p-4 rounded-lg bg-green-100 text-green-800'; resultDiv.textContent = `✅ Benar! ${winner.toUpperCase()} menang. Kamu mendapatkan 20 poin.`; raceScore += 20; playSound('correct');
+            } else {
+                resultDiv.className = 'p-4 rounded-lg bg-red-100 text-red-800'; resultDiv.textContent = `❌ Salah! Pemenangnya adalah ${winner.toUpperCase()}.`; playSound('wrong');
+            }
+            document.getElementById('raceScore').textContent = raceScore; raceRound++;
+            setTimeout(setupNewRaceRound, 3000);
+        }
+
+        // Data Soal untuk Speed Race & Puzzle
+        const speedRaceQuestions = [{scenario: "Anda perlu menemukan rute terpendek dari gudang ke toko dalam peta kota yang tidak macet (semua jalan dianggap sama). Algoritma mana yang pasti memberikan jawaban terbaik?", options: ["BFS", "DFS"], answer: "BFS", reason: "BFS sangat ideal untuk mencari jalur terpendek pada graf tidak berbobot karena ia menjelajah level demi level."}, {scenario: "Anda tersesat di labirin yang sangat rumit dan hanya memiliki sedikit memori pada perangkat GPS Anda. Algoritma mana yang lebih hemat memori untuk menemukan jalan keluar?", options: ["BFS", "DFS"], answer: "DFS", reason: "DFS hanya perlu menyimpan satu jalur pada satu waktu, sehingga penggunaan memorinya jauh lebih sedikit dibandingkan BFS."}, {scenario: "Sebuah perusahaan logistik ingin tahu *apakah ada* rute pengiriman dari Kota A ke Kota Z, tidak peduli seberapa panjang rutenya. Mereka butuh jawaban secepat mungkin.", options: ["BFS", "DFS"], answer: "DFS", reason: "DFS bisa sangat cepat menemukan solusi jika solusinya berada di cabang pertama yang dijelajahi, cocok untuk sekadar mengecek konektivitas."}, {scenario: "Anda sedang membangun fitur 'teman yang mungkin Anda kenal' di media sosial. Anda ingin mencari semua orang yang berjarak 2 atau 3 koneksi dari pengguna saat ini. Algoritma mana yang lebih cocok?", options: ["BFS", "DFS"], answer: "BFS", reason: "BFS sangat baik untuk menemukan semua node pada jarak (level) tertentu dari titik awal."}, {scenario: "Dalam sebuah game, Anda perlu memeriksa apakah ada jalan buntu (siklus) dalam sebuah peta procedural yang baru dibuat. Algoritma mana yang sering digunakan untuk mendeteksi siklus?", options: ["BFS", "DFS"], answer: "DFS", reason: "DFS dengan melacak node yang sedang dikunjungi (recursion stack) sangat efektif untuk mendeteksi siklus dalam sebuah graf."}];
+        let speedraceScore = 0, speedraceTimer, speedraceTimeLeft = 30, currentSpeedRaceQuestion = 0;
+
+        const puzzleStepsData = [{ id: 1, text: "Inisialisasi: Buat `queue` dan masukkan `node` awal." }, { id: 2, text: "Looping: Selama `queue` tidak kosong, lakukan langkah berikutnya." }, { id: 3, text: "Proses Node: Ambil `node` dari `queue`, lalu periksa apakah itu tujuan." }, { id: 4, text: "Eksplorasi: Cari semua `tetangga` dari `node` yang sedang diproses." }, { id: 5, text: "Antrikan Tetangga: Masukkan `tetangga` yang valid (belum dikunjungi) ke dalam `queue`." }];
+        const correctPuzzleOrder = [1, 2, 3, 4, 5];
+        let puzzleMoves = 0, sortableSteps, sortableSolution;
+
+        // --- Speed Race Game ---
+        function initSpeedRace() {
+            speedraceScore = 0; speedraceTimeLeft = 30; currentSpeedRaceQuestion = 0;
+            document.getElementById('speedraceScore').textContent = speedraceScore;
+            document.getElementById('speedraceTimer').textContent = speedraceTimeLeft;
+            document.getElementById('speedraceStartBtn').classList.remove('hidden');
+            document.getElementById('speedraceQuestion').innerHTML = '<p class="text-center text-gray-500">Klik tombol "Mulai Race!" untuk memulai.</p>';
+        }
+        function startSpeedRace() {
+            playSound('start_search');
+            document.getElementById('speedraceStartBtn').classList.add('hidden');
+            speedRaceQuestions.sort(() => Math.random() - 0.5);
+            loadSpeedRaceQuestion();
+            speedraceTimer = setInterval(() => {
+                speedraceTimeLeft--;
+                document.getElementById('speedraceTimer').textContent = speedraceTimeLeft;
+                if (speedraceTimeLeft <= 0) { clearInterval(speedraceTimer); endSpeedRace(); }
+            }, 1000);
+        }
+        function loadSpeedRaceQuestion() {
+            if (currentSpeedRaceQuestion >= speedRaceQuestions.length) currentSpeedRaceQuestion = 0;
+            const q = speedRaceQuestions[currentSpeedRaceQuestion];
+            document.getElementById('speedraceQuestion').innerHTML = `<h4 class="font-semibold text-lg text-gray-800 mb-4">${q.scenario}</h4><div class="flex justify-center space-x-4"><button onclick="selectSpeedRaceAnswer('BFS', '${q.answer}')" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition">BFS</button><button onclick="selectSpeedRaceAnswer('DFS', '${q.answer}')" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition">DFS</button></div><div id="speedraceFeedback" class="mt-4 text-center text-sm font-medium"></div>`;
+        }
+        function selectSpeedRaceAnswer(selected, correct) {
+            const feedbackDiv = document.getElementById('speedraceFeedback');
+            if (selected === correct) {
+                speedraceScore += 10; playSound('correct'); feedbackDiv.textContent = '✅ Benar! +10 Poin!'; feedbackDiv.className = 'mt-4 text-center text-sm font-medium text-green-600';
+            } else {
+                playSound('wrong'); feedbackDiv.textContent = '❌ Salah!'; feedbackDiv.className = 'mt-4 text-center text-sm font-medium text-red-600';
+            }
+            document.getElementById('speedraceScore').textContent = speedraceScore; currentSpeedRaceQuestion++;
+            setTimeout(loadSpeedRaceQuestion, 700);
+        }
+        function endSpeedRace() {
+            document.getElementById('speedraceQuestion').innerHTML = `<div class="text-center"><h4 class="font-bold text-2xl text-green-800 mb-2">Waktu Habis!</h4><p class="text-gray-700">Skor akhir Anda adalah:</p><p class="text-4xl font-bold text-green-600 my-4">${speedraceScore}</p><button onclick="initSpeedRace()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold">Main Lagi</button></div>`;
+            document.getElementById('speedraceStartBtn').classList.add('hidden');
+        }
+
+        // --- Algorithm Puzzle Game ---
+        function initPuzzle() {
+            puzzleMoves = 0; document.getElementById('puzzleMoves').textContent = puzzleMoves;
+            document.getElementById('puzzleResult').classList.add('hidden');
+            const stepsContainer = document.getElementById('puzzleSteps'), solutionContainer = document.getElementById('puzzleSolution');
+            stepsContainer.innerHTML = ''; solutionContainer.innerHTML = '<div class="text-gray-500 text-center">Seret langkah ke sini...</div>';
+            const shuffledSteps = [...puzzleStepsData].sort(() => Math.random() - 0.5);
+            shuffledSteps.forEach(step => stepsContainer.innerHTML += `<div data-id="${step.id}" class="p-3 bg-purple-100 border border-purple-200 rounded-lg cursor-grab active:cursor-grabbing">${step.text}</div>`);
+            sortableSteps = new Sortable(stepsContainer, { group: 'puzzle', animation: 150, ghostClass: 'bg-purple-200' });
+            sortableSolution = new Sortable(solutionContainer, {
+                group: 'puzzle', animation: 150,
+                onAdd: () => {
+                    const placeholder = solutionContainer.querySelector('.text-gray-500');
+                    if (placeholder) placeholder.style.display = 'none';
+                    puzzleMoves++; document.getElementById('puzzleMoves').textContent = puzzleMoves;
+                },
+                onRemove: () => { if (solutionContainer.children.length === 1 && solutionContainer.querySelector('.text-gray-500')) solutionContainer.querySelector('.text-gray-500').style.display = 'block'; }
+            });
+        }
+        function resetPuzzle() { playSound('nav_click'); if (sortableSteps) sortableSteps.destroy(); if (sortableSolution) sortableSolution.destroy(); initPuzzle(); }
+        function checkPuzzleAnswer() {
+            const solutionContainer = document.getElementById('puzzleSolution'), resultDiv = document.getElementById('puzzleResult');
+            const userOrder = Array.from(solutionContainer.children).map(c => c.dataset.id).filter(id => id).map(Number);
+            if (userOrder.length !== correctPuzzleOrder.length) return alert("Harap susun semua langkah terlebih dahulu!");
+            const isCorrect = JSON.stringify(userOrder) === JSON.stringify(correctPuzzleOrder);
+            resultDiv.classList.remove('hidden');
+            if (isCorrect) {
+                playSound('success'); resultDiv.className = 'p-4 rounded-lg bg-green-100 text-green-800 text-center'; resultDiv.innerHTML = `<h4 class="font-bold">🎉 Luar Biasa, Urutan Benar!</h4><p>Anda berhasil menyusun algoritma BFS dengan ${puzzleMoves} langkah.</p>`;
+            } else {
+                playSound('wrong'); resultDiv.className = 'p-4 rounded-lg bg-red-100 text-red-800 text-center'; resultDiv.innerHTML = `<h4 class="font-bold">❌ Belum Tepat!</h4><p>Urutan langkahnya masih salah. Coba perhatikan lagi alur logikanya dan susun ulang.</p>`;
+            }
+        }
+
+        // Evaluasi Kuis
+        const quizArea = document.getElementById('quizArea');
+        const quizIntro = document.getElementById('quizIntro');
+        const quizContent = document.getElementById('quizContent');
+        const quizResult = document.getElementById('quizResult');
+        let currentQuestion = 0, score = 0, quizTimer;
+        const quizQuestions = [{question: "Algoritma mana yang paling efisien untuk menemukan rute terpendek dalam graf tidak berbobot?", options: ["BFS", "DFS", "Keduanya sama", "Tidak keduanya"], answer: "BFS"}, {question: "Struktur data apa yang digunakan oleh BFS?", options: ["Stack", "Queue", "Array", "Linked List"], answer: "Queue"}, {question: "Kapan DFS lebih unggul dari BFS?", options: ["Mencari rute terpendek", "Membutuhkan memori lebih sedikit", "Menjelajahi semua node tetangga dulu", "Menjamin solusi optimal"], answer: "Membutuhkan memori lebih sedikit"}, {question: "Jika graf memiliki banyak cabang yang sangat dalam, algoritma mana yang berisiko mengalami stack overflow?", options: ["BFS", "DFS"], answer: "DFS"}, {question: "Untuk pemetaan jejaring sosial (mencari teman dari teman), algoritma apa yang lebih cocok?", options: ["BFS", "DFS"], answer: "BFS"}];
+        
+        function startQuiz() { currentQuestion = 0; score = 0; quizIntro.classList.add('hidden'); quizResult.classList.add('hidden'); quizContent.classList.remove('hidden'); loadQuestion(); }
+        function loadQuestion() {
+            if (currentQuestion >= quizQuestions.length) return showQuizResult();
+            const q = quizQuestions[currentQuestion];
+            document.getElementById('questionNumber').textContent = currentQuestion + 1;
+            document.getElementById('questionText').textContent = q.question;
+            const optionsDiv = document.getElementById('answerOptions');
+            optionsDiv.innerHTML = "";
+            q.options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.className = 'w-full text-left p-4 bg-gray-50 hover:bg-blue-100 rounded-lg border border-gray-200';
+                button.onclick = () => selectAnswer(button, option, q.answer);
+                optionsDiv.appendChild(button);
+            });
+            startQuizTimer(); document.getElementById('nextQuestionBtn').disabled = true;
+        }
+        function startQuizTimer() {
+            let timeLeft = 30;
+            document.getElementById('quizTimer').textContent = timeLeft;
+            quizTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('quizTimer').textContent = timeLeft;
+                if (timeLeft <= 0) { clearInterval(quizTimer); nextQuestion(); }
+            }, 1000);
+        }
+        function selectAnswer(button, selected, correct) {
+            clearInterval(quizTimer);
+            document.querySelectorAll('#answerOptions button').forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === correct) btn.classList.add('bg-green-200', 'border-green-400');
+            });
+            if (selected === correct) { score++; button.classList.add('bg-green-200', 'border-green-400'); playSound('correct'); }
+            else { button.classList.add('bg-red-200', 'border-red-400'); playSound('wrong'); }
+            document.getElementById('nextQuestionBtn').disabled = false;
+        }
+        function nextQuestion() { currentQuestion++; loadQuestion(); }
+        function showQuizResult() {
+            quizContent.classList.add('hidden'); quizResult.classList.remove('hidden');
+            const finalScore = (score / quizQuestions.length) * 100;
+            document.getElementById('finalScore').textContent = `${finalScore}%`;
+            document.getElementById('scoreFeedback').textContent = finalScore >= 80 ? "Luar biasa! Pemahamanmu sangat baik." : (finalScore >= 60 ? "Bagus! Sedikit lagi menuju sempurna." : "Terus belajar!");
+        }
+        function restartQuiz() { startQuiz(); }
+        
+        // Page entry
+        const mainApp = document.getElementById('mainApp');
+        const embedPage = document.getElementById('embedPage');
+        const gifPage = document.getElementById('gifPage');
+        
+        setTimeout(autoNavigateToEmbedPage, 5000); // 5 detik
+
+        function autoNavigateToEmbedPage() {
+            gifPage.classList.add('hidden');
+            embedPage.classList.remove('hidden');
+        }
+        function enterApp() {
+            embedPage.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            showSection('teori');
+        }
+        function goToPracticeApp() {
+            mainApp.classList.remove('hidden');
+            showSection('latihan');
+        }
+        function goTolandingPageApp() {
+            embedPage.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            showSection('teori');
+        }
+    </script>
+    
+    </div>
+</body>
+</html>
